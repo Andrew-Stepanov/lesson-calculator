@@ -34,6 +34,11 @@
     </div>
 
     <div class="container">
+        <label for="validityDate">Срок действия предложения:</label>
+        <input type="date" id="validityDate">
+    </div>
+
+    <div class="container">
         <button onclick="generateMessage()">Сгенерировать сообщение</button>
     </div>
 
@@ -44,7 +49,7 @@
 
     <script>
         const lessonPackages = {
-            4: { cost: 4800, link: "https://app.progkids.com/i/buy/4800", selected: false, bonusLessons: 0 },
+            4: { cost: 4800, link: "https://app.progkids.com/i/buy/4800", selected: true, bonusLessons: 0 },
             8: { cost: 9200, link: "https://app.progkids.com/i/buy/9200", selected: true, bonusLessons: 0 },
             16: { cost: 16800, link: "https://app.progkids.com/i/buy/16800", selected: true, bonusLessons: 0 },
             24: { cost: 24000, link: "https://app.progkids.com/i/buy/24000", selected: true, bonusLessons: 0 },

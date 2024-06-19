@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     populateTable();
     updateCosts();
+    setDefaultDate();
 });
 
 function populateTable() {
@@ -62,13 +63,22 @@ function generateMessage() {
             const costPerLessonWithBonuses = Math.ceil(totalCost / totalLessons);
             const link = lessonPackages[packageCount].link;
 
-            message += `${packageCount} ${getLessonWord(packageCount)} + ${bonusLessons} ${getBonusLessonWord(bonusLessons)} - ${formatCurrency(totalCost)} рублей\n`;
-            message += `Стоимость за урок с бонусами: ${formatCurrency(costPerLessonWithBonuses)} рублей\n`;
+            message += `${packageCount} ${getLessonWord(packageCount)}`;
+            if (bonusLessons > 0) {
+                message += ` + ${bonusLessons} ${getBonusLessonWord(bonusLessons)}`;
+            }
+            message += ` - ${formatCurrency(totalCost)} рублей\n`;
+            message += `Стоимость за урок${bonusLessons > 0 ? ' с бонусами' : ''}: ${formatCurrency(costPerLessonWithBonuses)} рублей\n`;
             message += `${link}\n\n`;
         }
     });
 
-    message += '* Предложение бонусных уроков действительно в течение 1 дня после пробного урока.';
+    const validityDate = document.getElementById('validityDate').valueAsDate;
+    if (validityDate) {
+        message += `* Предложение действительно до ${formatDate(validityDate)}`;
+    } else {
+        message += '* Предложение действительно в течение 1 дня после пробного урока.';
+    }
     document.getElementById('generatedMessage').value = message;
 }
 
@@ -101,4 +111,16 @@ function copyMessage() {
     messageText.select();
     document.execCommand('copy');
     alert('Сообщение скопировано в буфер обмена');
+}
+
+function setDefaultDate() {
+    const validityDate = document.getElementById('validityDate');
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    validityDate.valueAsDate = tomorrow;
+}
+
+function formatDate(date) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('ru-RU', options);
 }
