@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор бонусных уроков</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        input, button, select, textarea {
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+            padding: 10px 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .copy-button {
+            background-color: transparent;
+            border: none;
+            color: #4CAF50;
+            cursor: pointer;
+            font-size: 0.8em;
+            padding: 2px 5px;
+        }
+        .copy-button:hover {
+            color: #388E3C;
+        }
+        .warning {
+            color: red;
+        }
+        .costWithBonuses {
+            
+        }
+        h1, h3 {
+            color: #4CAF50;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Калькулятор бонусных уроков</h1>
+    
+    <div class="container">
+        <h3>Выберите пакеты уроков и укажите количество бонусных уроков:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Выбрать</th>
+                    <th>Пакет (исходный)</th>
+                    <th>Общая стоимость (руб)</th>
+                    <th>Стоимость за урок (руб)</th>
+                    <th>Бонусные уроки</th>
+                    <th>Стоимость за урок с бонусами (руб)</th>
+                </tr>
+            </thead>
+            <tbody id="lessonPackagesTable">
+                <!-- Rows are dynamically generated -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        <button onclick="generateMessage()">Сгенерировать сообщение</button>
+    </div>
+
+    <div class="container">
+        <textarea id="generatedMessage" rows="10" readonly></textarea>
+        <button onclick="copyMessage()">Скопировать сообщение</button>
+    </div>
+
+    <script>
+        const lessonPackages = {
+            4: { cost: 6600, link: "https://app.progkids.com/i/buy/four-lessons-new" },
+            8: { cost: 12800, link: "https://app.progkids.com/i/buy/eight-lessons-new" },
+            16: { cost: 24800, link: "https://app.progkids.com/i/buy/sixteen-lessons-new" },
+            24: { cost: 36000, link: "https://app.progkids.com/i/buy/twentyfour-lessons-new" },
+            32: { cost: 46400, link: "https://app.progkids.com/i/buy/thirtytwo-lessons-new" },
+            40: { cost: 56000, link: "https://app.progkids.com/i/buy/forty-lessons-new" },
+            48: { cost: 64800, link: "https://app.progkids.com/i/buy/fortyeight-lessons-new" },
+            56: { cost: 72800, link: "https://app.progkids.com/i/buy/fiftysix-lessons-new" },
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableBody = document.getElementById('lessonPackagesTable');
+            Object.keys(lessonPackages).forEach(key => {
+                const packageData = lessonPackages[key];
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="lessonPackageCheckbox" data-package="${key}" ${key > 8 ? 'checked' : ''}></td>
+                    <td>${key} ${getLessonWord(key)} <button class="copy-button" onclick="copyLink(${key})">🔗</button></td>
+                    <td>${formatCurrency(packageData.cost)}</td>
+                    <td>${formatCurrency((packageData.cost / key).toFixed(2))}</td>
+                    <td><input type="number" class="bonusLessonsInput" data-package="${key}" value="${key >= 24 ? 3 : key >= 16 ? 2 : key >= 8 ? 1 : 0}" min="0" onchange="updateCosts()"></td>
+                    <td class="costWithBonuses" data-package="${key}"></td>
+                `;
+                tableBody.appendChild(row);
+            });
+            updateCosts();
+        });
+
+        function updateCosts() {
+            const rows = document.querySelectorAll('#lessonPackagesTable tr');
+            rows.forEach(row => {
+                const packageCount = parseInt(row.querySelector('.lessonPackageCheckbox').dataset.package);
+                const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value);
+                const totalLessons = packageCount + bonusLessons;
+                const totalCost = lessonPackages[packageCount].cost;
+                const costWithBonuses = Math.ceil(totalCost / totalLessons).toFixed(0);
+                const costCell = row.querySelector('.costWithBonuses');
+                costCell.textContent = formatCurrency(costWithBonuses);
+
+                if (costWithBonuses < 1050) {
+                    costCell.classList.add('warning');
+                    costCell.title = "Стоимость за урок слишком низкая, бонусы недопустимы!";
+                } else {
+                    costCell.classList.remove('warning');
+                    costCell.title = "";
+                }
+            });
+        }
+
+        function copyLink(packageCount) {
+            const link = lessonPackages[packageCount].link;
+            navigator.clipboard.writeText(link)
+                .then(() => alert('Ссылка скопирована в буфер обмена'))
+                .catch(err => console.error('Ошибка при копировании: ', err));
+        }
+
+        function generateMessage() {
+            const rows = document.querySelectorAll('#lessonPackagesTable tr');
+            let message = 'Цены на индивидуальные уроки с учителем:\n\n';
+
+            rows.forEach(row => {
+                const checkbox = row.querySelector('.lessonPackageCheckbox');
+                if (checkbox.checked) {
+                    const packageCount = parseInt(checkbox.dataset.package);
+                    const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value);
+                    const totalLessons = packageCount + bonusLessons;
+                    const totalCost = lessonPackages[packageCount].cost;
+                    const costPerLessonWithBonuses = Math.ceil(totalCost / totalLessons).toFixed(0);
+                    const link = lessonPackages[packageCount].link;
+
+                    message += `${packageCount} ${getLessonWord(packageCount)} + ${bonusLessons} ${getBonusLessonWord(bonusLessons)} - ${formatCurrency(totalCost)} рублей\n`;
+                    message += `Стоимость за урок с бонусами: ${formatCurrency(costPerLessonWithBonuses)} рублей\n`;
+                    message += `${link}\n\n`;
+                }
+            });
+
+            message += '* Предложение бонусных уроков действительно в течение 1 дня после пробного урока.';
+            document.getElementById('generatedMessage').value = message;
+        }
+
+        function formatCurrency(value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        }
+
+        function getLessonWord(number) {
+            if (number % 10 === 1 && number % 100 !== 11) {
+                return 'урок';
+            } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
+                return 'урока';
+            } else {
+                return 'уроков';
+            }
+        }
+
+        function getBonusLessonWord(number) {
+            if (number % 10 === 1 && number % 100 !== 11) {
+                return 'бонусный урок';
+            } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
+                return 'бонусных урока';
+            } else {
+                return 'бонусных уроков';
+            }
+        }
+
+        function copyMessage() {
+            const messageText = document.getElementById('generatedMessage');
+            messageText.select();
+            document.execCommand('copy');
+            alert('Сообщение скопировано в буфер обмена');
+        }
+    </script>
+</body>
+</html>
