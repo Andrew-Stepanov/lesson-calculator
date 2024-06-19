@@ -87,7 +87,9 @@ function formatCurrency(value) {
 }
 
 function getLessonWord(number) {
-    if (number % 10 === 1 && number % 100 !== 11) {
+    if (number === 1) {
+        return 'урок';
+    } else if (number % 10 === 1 && number % 100 !== 11) {
         return 'урок';
     } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
         return 'урока';
@@ -97,7 +99,9 @@ function getLessonWord(number) {
 }
 
 function getBonusLessonWord(number) {
-    if (number % 10 === 1 && number % 100 !== 11) {
+    if (number === 1) {
+        return 'бонусный урок';
+    } else if (number % 10 === 1 && number % 100 !== 11) {
         return 'бонусный урок';
     } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
         return 'бонусных урока';
