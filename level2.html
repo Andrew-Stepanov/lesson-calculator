@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор бонусных уроков - Основной</title>
+    <title>Калькулятор бонусных уроков - Второй уровень скидок</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="tabs">
-        <a href="index.html" class="active">Основной</a>
+        <a href="index.html">Основной</a>
         <a href="level1.html">Первый уровень</a>
-        <a href="level2.html">Второй уровень</a>
+        <a href="level2.html" class="active">Второй уровень</a>
     </div>
-    <h1>Калькулятор бонусных уроков</h1>
+    <h1>Калькулятор бонусных уроков - Второй уровень скидок</h1>
     
     <div class="container">
-        <h3>Выберите пакеты уроков и укажите количество бонусных уроков:</h3>
+        <h3>Выберите пакеты уроков:</h3>
         <table>
             <thead>
                 <tr>
@@ -44,14 +44,8 @@
 
     <script>
         const lessonPackages = {
-            4: { cost: 6600, link: "https://app.progkids.com/i/buy/four-lessons-new", selected: false, bonusLessons: 0 },
-            8: { cost: 12800, link: "https://app.progkids.com/i/buy/eight-lessons-new", selected: false, bonusLessons: 1 },
-            16: { cost: 24800, link: "https://app.progkids.com/i/buy/sixteen-lessons-new", selected: true, bonusLessons: 2 },
-            24: { cost: 36000, link: "https://app.progkids.com/i/buy/twentyfour-lessons-new", selected: true, bonusLessons: 3 },
-            32: { cost: 46400, link: "https://app.progkids.com/i/buy/thirtytwo-lessons-new", selected: true, bonusLessons: 3 },
-            40: { cost: 56000, link: "https://app.progkids.com/i/buy/forty-lessons-new", selected: true, bonusLessons: 3 },
-            48: { cost: 64800, link: "https://app.progkids.com/i/buy/fortyeight-lessons-new", selected: true, bonusLessons: 3 },
-            56: { cost: 72800, link: "https://app.progkids.com/i/buy/fiftysix-lessons-new", selected: true, bonusLessons: 3 },
+            4: { cost: 4400, link: "https://app.progkids.com/i/buy/4400", selected: true, bonusLessons: 0 },
+            8: { cost: 8400, link: "https://app.progkids.com/i/buy/8400", selected: true, bonusLessons: 0 },
         };
     </script>
     <script src="common.js"></script>
