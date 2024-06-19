@@ -1,61 +1,79 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Калькулятор бонусных уроков - Первый уровень скидок</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <div class="tabs">
-        <a href="index.html">Основной</a>
-        <a href="level1.html" class="active">Первый уровень</a>
-        <a href="level2.html" >Второй уровень</a>
-        <a href="one-lesson.html">Один урок</a>
+      <a href="index.html">Основной</a>
+      <a href="level1.html" class="active">Первый уровень</a>
+      <a href="level2.html">Второй уровень</a>
+      <a href="one-lesson.html">Один урок</a>
     </div>
-    <h1>Калькулятор бонусных уроков - Первый уровень скидок</h1>
-    
     <div class="container">
-        <h3>Выберите пакеты уроков:</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Выбрать</th>
-                    <th>Пакет (исходный)</th>
-                    <th>Общая стоимость (руб)</th>
-                    <th>Стоимость за урок (руб)</th>
-                    <th>Бонусные уроки</th>
-                    <th>Стоимость за урок с бонусами (руб)</th>
-                </tr>
-            </thead>
-            <tbody id="lessonPackagesTable">
-                <!-- Rows are dynamically generated -->
-            </tbody>
-        </table>
+      <h3>Выберите пакеты уроков:</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Выбрать</th>
+            <th>Пакет (исходный)</th>
+            <th>Общая стоимость (руб)</th>
+            <th>Стоимость за урок (руб)</th>
+            <th>Бонусные уроки</th>
+            <th>Стоимость за урок с бонусами (руб)</th>
+          </tr>
+        </thead>
+        <tbody id="lessonPackagesTable">
+          <!-- Rows are dynamically generated -->
+        </tbody>
+      </table>
     </div>
 
     <div class="container">
-        <label for="validityDate">Срок действия предложения:</label>
-        <input type="date" id="validityDate">
+      <label for="validityDate">Срок действия предложения:</label>
+      <input type="date" id="validityDate" />
     </div>
 
     <div class="container">
-        <button onclick="generateMessage()">Сгенерировать сообщение</button>
+      <button onclick="generateMessage()">Сгенерировать сообщение</button>
     </div>
 
     <div class="container">
-        <textarea id="generatedMessage" rows="6" readonly></textarea>
-        <button onclick="copyMessage()">Скопировать сообщение</button>
+      <textarea id="generatedMessage" rows="6" readonly></textarea>
+      <button onclick="copyMessage()">Скопировать сообщение</button>
     </div>
 
     <script>
-        const lessonPackages = {
-            4: { cost: 4800, link: "https://app.progkids.com/i/buy/4800", selected: true, bonusLessons: 0 },
-            8: { cost: 9200, link: "https://app.progkids.com/i/buy/9200", selected: true, bonusLessons: 0 },
-            16: { cost: 16800, link: "https://app.progkids.com/i/buy/16800", selected: true, bonusLessons: 0 },
-            24: { cost: 24000, link: "https://app.progkids.com/i/buy/24000", selected: true, bonusLessons: 0 },
-        };
+      const lessonPackages = {
+        4: {
+          cost: 4800,
+          link: "https://app.progkids.com/i/buy/4800",
+          selected: true,
+          bonusLessons: 0,
+        },
+        8: {
+          cost: 9200,
+          link: "https://app.progkids.com/i/buy/9200",
+          selected: true,
+          bonusLessons: 0,
+        },
+        16: {
+          cost: 16800,
+          link: "https://app.progkids.com/i/buy/16800",
+          selected: true,
+          bonusLessons: 0,
+        },
+        24: {
+          cost: 24000,
+          link: "https://app.progkids.com/i/buy/24000",
+          selected: true,
+          bonusLessons: 0,
+        },
+      };
     </script>
     <script src="common.js"></script>
-</body>
+  </body>
 </html>
