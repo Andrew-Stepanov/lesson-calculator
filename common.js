@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function populateTable() {
     const tableBody = document.getElementById('lessonPackagesTable');
+    tableBody.innerHTML = ''; // Clear existing rows
     Object.keys(lessonPackages).forEach(key => {
         const packageData = lessonPackages[key];
         const row = document.createElement('tr');
@@ -127,4 +128,15 @@ function setDefaultDate() {
 function formatDate(date) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('ru-RU', options);
+}
+
+function resetValues() {
+    const checkboxes = document.querySelectorAll('.lessonPackageCheckbox');
+    checkboxes.forEach(checkbox => checkbox.checked = false);
+
+    const bonusInputs = document.querySelectorAll('.bonusLessonsInput');
+    bonusInputs.forEach(input => input.value = 0);
+
+    setDefaultDate();
+    updateCosts();
 }
