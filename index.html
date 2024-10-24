@@ -7,57 +7,68 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="tabs">
-        <a href="index.html" class="active">Основной</a>
-        <a href="level1.html" >Первый уровень</a>
-        <a href="level2.html" >Второй уровень</a>
-        <a href="one-lesson.html">Один урок</a>
-    </div>
+
     <div class="container">
+        <label>Выберите валюту:</label>
+        <div class="button-group">
+            <button onclick="changeCurrency('rub')" id="currency-rub" class="active">Рубли</button>
+            <button onclick="changeCurrency('usd')" id="currency-usd">Доллары</button>
+        </div>
+
+        <label>Выберите язык:</label>
+        <div class="button-group">
+            <button onclick="changeLanguage('ru')" id="language-ru" class="active">Русский</button>
+            <button onclick="changeLanguage('en')" id="language-en">English</button>
+        </div>
+
+        <label>Выберите уровень скидок:</label>
+        <div class="button-group">
+            <button onclick="changeDiscountLevel('base')" id="discount-base" class="active">Основной</button>
+            <button onclick="changeDiscountLevel('level1')" id="discount-level1">Первый уровень</button>
+            <button onclick="changeDiscountLevel('level2')" id="discount-level2">Второй уровень</button>
+            <button onclick="changeDiscountLevel('oneLesson')" id="discount-oneLesson">Один урок</button>
+        </div>
+    </div>
+
+    <div class="container small-content">
         <h3>Выберите пакеты уроков и укажите количество бонусных уроков:</h3>
         <table>
             <thead>
                 <tr>
                     <th>Выбрать</th>
-                    <th>Пакет (исходный)</th>
-                    <th>Общая стоимость (руб)</th>
-                    <th>Стоимость за урок (руб)</th>
+                    <th>Пакет</th>
+                    <th>Общая стоимость</th>
+                    <th>Стоимость за урок</th>
                     <th>Бонусные уроки</th>
-                    <th>Стоимость за урок с бонусами (руб)</th>
+                    <th>Стоимость за урок с бонусами</th>
                 </tr>
             </thead>
             <tbody id="lessonPackagesTable">
-                <!-- Rows are dynamically generated -->
+                <!-- Таблица будет заполнена скриптом -->
             </tbody>
         </table>
     </div>
 
-    <div class="container">
-        <label for="validityDate">Срок действия предложения:</label>
-        <input type="date" id="validityDate">
+    <div class="container large-textarea">
+        <div class="textarea-wrapper">
+            <textarea id="generatedMessage" rows="12" readonly oninput="autoResize(this)"></textarea>
+            <button class="copy-button" onclick="copyMessage()">Скопировать</button>
+        </div>
     </div>
 
-    <div class="container">
-        <button onclick="generateMessage()">Сгенерировать сообщение</button>
-    </div>
-
-    <div class="container">
-        <textarea id="generatedMessage" rows="6" readonly></textarea>
-        <button onclick="copyMessage()">Скопировать сообщение</button>
-    </div>
-
-    <script>
-        const lessonPackages = {
-            4: { cost: 6600, link: "https://app.progkids.com/i/buy/four-lessons-new", selected: false, bonusLessons: 0 },
-            8: { cost: 12800, link: "https://app.progkids.com/i/buy/eight-lessons-new", selected: false, bonusLessons: 1 },
-            16: { cost: 24800, link: "https://app.progkids.com/i/buy/sixteen-lessons-new", selected: true, bonusLessons: 2 },
-            24: { cost: 36000, link: "https://app.progkids.com/i/buy/twentyfour-lessons-new", selected: true, bonusLessons: 3 },
-            32: { cost: 46400, link: "https://app.progkids.com/i/buy/thirtytwo-lessons-new", selected: true, bonusLessons: 3 },
-            40: { cost: 56000, link: "https://app.progkids.com/i/buy/forty-lessons-new", selected: true, bonusLessons: 3 },
-            48: { cost: 64800, link: "https://app.progkids.com/i/buy/fortyeight-lessons-new", selected: true, bonusLessons: 3 },
-            56: { cost: 72800, link: "https://app.progkids.com/i/buy/fiftysix-lessons-new", selected: true, bonusLessons: 3 },
-        };
-    </script>
+    <script src="lessonPackagesConfig.js"></script>
     <script src="common.js"></script>
+    <script>
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+
+        // После загрузки текста в textarea, вызываем autoResize для корректной высоты
+        document.addEventListener('DOMContentLoaded', function() {
+            const textarea = document.getElementById('generatedMessage');
+            autoResize(textarea); // Устанавливаем высоту при первой загрузке
+        });
+    </script>
 </body>
 </html>

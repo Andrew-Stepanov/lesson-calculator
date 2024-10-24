@@ -1,107 +1,91 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 10px;
-    background-color: #f9f9f9;
-    color: #333;
+.container {
+    margin-bottom: 20px;
 }
 
-input, button, select, textarea {
-    padding: 8px;
-    margin: 4px 0;
-    font-size: 0.9em;
-    border: 1px solid #ccc;
+.button-group {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.button-group button {
+    padding: 8px 12px;
+    border: 1px solid #4CAF50;
+    background-color: white;
+    color: #4CAF50;
+    cursor: pointer;
+    transition: background-color 0.3s;
     border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-right: 5px;
+    font-size: 0.9em;
 }
 
-button {
+.button-group button.active {
     background-color: #4CAF50;
     color: white;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.3s;
-    padding: 8px 16px;
 }
 
-button:hover {
+.button-group button:hover {
     background-color: #45a049;
+    color: white;
 }
 
-table {
+.small-content table {
+    font-size: 0.9em;
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
-    background-color: white;
-    border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 6px;
-    text-align: center;
-    font-size: 0.9em;
+.small-content th, .small-content td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
-th {
+.small-content th {
     background-color: #f2f2f2;
 }
 
-.copy-button {
-    background-color: transparent;
-    border: none;
-    color: #4CAF50;
-    cursor: pointer;
-    font-size: 0.8em;
-    padding: 2px;
+.large-textarea {
+    margin-top: 30px;
+    position: relative;
 }
 
-.copy-button:hover {
-    color: #388E3C;
+.textarea-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.textarea-wrapper textarea {
+    width: calc(100% - 120px);
+    font-size: 1.1em;
+    padding: 10px;
+    resize: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+.textarea-wrapper .copy-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    height: 100%;
+    display: inline-block;
+}
+
+.textarea-wrapper .copy-button:hover {
+    background-color: #45a049;
 }
 
 .warning {
     color: red;
-}
-
-.costWithBonuses {
-    font-size: 0.9em;
-}
-
-h1, h3 {
-    color: #4CAF50;
-}
-
-.container {
-    background-color: white;
-    padding: 10px;
-    border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-}
-
-textarea {
-    width: 100%;
-    box-sizing: border-box;
-    resize: none;
-    font-size: 0.9em;
-}
-
-.tabs {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.tabs a {
-    padding: 10px;
-    text-decoration: none;
-    color: #4CAF50;
-    border: 1px solid #4CAF50;
-    border-radius: 3px 3px 0 0;
-    margin-right: 2px;
-}
-
-.tabs a.active {
-    background-color: #4CAF50;
-    color: white;
+    font-weight: bold;
 }

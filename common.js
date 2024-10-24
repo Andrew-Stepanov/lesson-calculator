@@ -1,41 +1,124 @@
+let currentCurrency = 'rub'; // 'usd' or 'rub'
+let currentLanguage = 'ru'; // 'ru' or 'en'
+let currentDiscountLevel = 'base'; // 'base', 'level1', 'level2', 'oneLesson'
+
+// Минимальные значения стоимости для разных валют и языков
+const minCosts = {
+    rub: {
+        ru: 1050,
+        en: 1500
+    },
+    usd: {
+        ru: 20,
+        en: 25
+    }
+};
+
+// Символы валют для отображения
+const currencySymbols = {
+    rub: 'рублей',
+    usd: 'долларов'
+};
+
+function loadLessonPackages() {
+    if (!lessonPackagesConfig[currentCurrency] || !lessonPackagesConfig[currentCurrency][currentLanguage]) {
+        console.error(`Данные для валюты "${currentCurrency}" и языка "${currentLanguage}" не найдены.`);
+        return {}; // Возвращаем пустой объект, чтобы избежать ошибок
+    }
+    return lessonPackagesConfig[currentCurrency][currentLanguage][currentDiscountLevel];
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    lessonPackages = loadLessonPackages();
     populateTable();
     updateCosts();
-    setDefaultDate();
+    generateMessage(); // Генерация сообщения при загрузке страницы
 });
+
+function changeCurrency(currency) {
+    currentCurrency = currency;
+    updateButtonGroup('currency', currency);
+    lessonPackages = loadLessonPackages();
+    populateTable();
+    updateCosts();
+    generateMessage(); // Генерация сообщения при изменении валюты
+}
+
+function changeLanguage(language) {
+    currentLanguage = language;
+    updateButtonGroup('language', language);
+    lessonPackages = loadLessonPackages();
+    populateTable();
+    updateCosts();
+    generateMessage(); // Генерация сообщения при изменении языка
+}
+
+function changeDiscountLevel(level) {
+    currentDiscountLevel = level;
+    updateButtonGroup('discount', level);
+    lessonPackages = loadLessonPackages();
+    populateTable();
+    updateCosts();
+    generateMessage(); // Генерация сообщения при изменении уровня скидок
+}
+
+function updateButtonGroup(group, selectedValue) {
+    const buttons = document.querySelectorAll(`.button-group button[id^='${group}']`);
+    buttons.forEach(button => {
+        if (button.id === `${group}-${selectedValue}`) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    });
+}
 
 function populateTable() {
     const tableBody = document.getElementById('lessonPackagesTable');
-    tableBody.innerHTML = ''; // Clear existing rows
+    tableBody.innerHTML = ''; // Очистка таблицы
+
+    if (!lessonPackages || Object.keys(lessonPackages).length === 0) {
+        console.error("Нет данных для отображения.");
+        tableBody.innerHTML = '<tr><td colspan="6">Нет данных для отображения</td></tr>';
+        return;
+    }
+
     Object.keys(lessonPackages).forEach(key => {
         const packageData = lessonPackages[key];
+        const costFormatted = packageData.cost ? formatCurrency(packageData.cost) : '—';
+        const costPerLessonFormatted = packageData.cost ? formatCurrency(Math.ceil(packageData.cost / key)) : '—';
+
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><input type="checkbox" class="lessonPackageCheckbox" data-package="${key}" ${packageData.selected ? 'checked' : ''}></td>
-            <td>${key} ${getLessonWord(key)} <button class="copy-button" onclick="copyLink(${key})">🔗</button></td>
-            <td>${formatCurrency(packageData.cost)}</td>
-            <td>${formatCurrency(Math.ceil(packageData.cost / key))}</td>
-            <td><input type="number" class="bonusLessonsInput" data-package="${key}" value="${packageData.bonusLessons || 0}" min="0" ${packageData.bonusLessons === undefined ? 'disabled' : ''} onchange="updateCosts()"></td>
+            <td><input type="checkbox" class="lessonPackageCheckbox" data-package="${key}" ${packageData.selected ? 'checked' : ''} onchange="generateMessage()"></td>
+            <td>${key} ${getLessonWord(key)} <button class="copy-button" onclick="copyLink('${key}')">🔗</button></td>
+            <td>${costFormatted}</td>
+            <td>${costPerLessonFormatted}</td>
+            <td><input type="number" class="bonusLessonsInput" data-package="${key}" value="${packageData.bonusLessons || 0}" min="0" onchange="updateCosts(); generateMessage()"></td>
             <td class="costWithBonuses" data-package="${key}"></td>
         `;
         tableBody.appendChild(row);
     });
+    updateCosts(); // Обновляем стоимость после заполнения таблицы
 }
 
 function updateCosts() {
     const rows = document.querySelectorAll('#lessonPackagesTable tr');
+    const minCost = minCosts[currentCurrency][currentLanguage]; // Минимальная стоимость для текущей валюты и языка
+
     rows.forEach(row => {
         const packageCount = parseInt(row.querySelector('.lessonPackageCheckbox').dataset.package);
         const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value);
         const totalLessons = packageCount + bonusLessons;
-        const totalCost = lessonPackages[packageCount].cost;
-        const costWithBonuses = Math.ceil(totalCost / totalLessons);
+        const totalCost = lessonPackages[packageCount] ? lessonPackages[packageCount].cost : null;
+        const costWithBonuses = totalCost ? Math.ceil(totalCost / totalLessons) : 0;
         const costCell = row.querySelector('.costWithBonuses');
         costCell.textContent = formatCurrency(costWithBonuses);
 
-        if (costWithBonuses < 1050) {
+        // Подсвечиваем, если стоимость за урок ниже минимальной
+        if (costWithBonuses < minCost) {
             costCell.classList.add('warning');
-            costCell.title = "Стоимость за урок слишком низкая, бонусы недопустимы!";
+            costCell.title = `Стоимость за урок ниже минимальной (${formatCurrency(minCost)})!`;
         } else {
             costCell.classList.remove('warning');
             costCell.title = "";
@@ -50,93 +133,114 @@ function copyLink(packageCount) {
         .catch(err => console.error('Ошибка при копировании: ', err));
 }
 
-function generateMessage() {
-    const rows = document.querySelectorAll('#lessonPackagesTable tr');
-    let message = 'Цены на индивидуальные уроки с учителем:\n\n';
-
-    rows.forEach(row => {
-        const checkbox = row.querySelector('.lessonPackageCheckbox');
-        if (checkbox.checked) {
-            const packageCount = parseInt(checkbox.dataset.package);
-            const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value);
-            const totalLessons = packageCount + bonusLessons;
-            const totalCost = lessonPackages[packageCount].cost;
-            const costPerLessonWithBonuses = Math.ceil(totalCost / totalLessons);
-            const link = lessonPackages[packageCount].link;
-
-            message += `${packageCount} ${getLessonWord(packageCount)}`;
-            if (bonusLessons > 0) {
-                message += ` + ${bonusLessons} ${getBonusLessonWord(bonusLessons)}`;
-            }
-            message += ` - ${formatCurrency(totalCost)} рублей\n`;
-            message += `Стоимость за урок${bonusLessons > 0 ? ' с бонусами' : ''}: ${formatCurrency(costPerLessonWithBonuses)} рублей\n`;
-            message += `${link}\n\n`;
-        }
-    });
-
-    const validityDate = document.getElementById('validityDate').valueAsDate;
-    if (validityDate) {
-        message += `* Предложение действительно до ${formatDate(validityDate)}`;
-    } else {
-        message += '* Предложение действительно в течение 1 дня после пробного урока.';
-    }
-    document.getElementById('generatedMessage').value = message;
-}
-
 function formatCurrency(value) {
+    if (!value) return '—'; // Добавим проверку на null или undefined
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
+// Функция для склонения слова "урок"
 function getLessonWord(number) {
-    if (number === 1) {
-        return 'урок';
-    } else if (number % 10 === 1 && number % 100 !== 11) {
-        return 'урок';
-    } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
-        return 'урока';
-    } else {
-        return 'уроков';
+    if (number === 1 || (number % 10 === 1 && number % 100 !== 11)) return 'урок';
+    if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) return 'урока';
+    return 'уроков';
+}
+
+// Функция для склонения слова "бонусный"
+function getBonusWord(number) {
+    if (number === 1 || (number % 10 === 1 && number % 100 !== 11)) return 'бонусный';
+    if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) return 'бонусных';
+    return 'бонусных';
+}
+
+// Функция для склонения слова "рубль" и "доллар"
+function getCurrencyWord(number, currency) {
+    if (currency === 'рублей') {
+        if (number === 1 || (number % 10 === 1 && number % 100 !== 11)) return 'рубль';
+        if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) return 'рубля';
+        return 'рублей';
+    } else if (currency === 'долларов') {
+        if (number === 1 || (number % 10 === 1 && number % 100 !== 11)) return 'доллар';
+        if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) return 'доллара';
+        return 'долларов';
     }
 }
 
-function getBonusLessonWord(number) {
-    if (number === 1) {
-        return 'бонусный урок';
-    } else if (number % 10 === 1 && number % 100 !== 11) {
-        return 'бонусный урок';
-    } else if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) {
-        return 'бонусных урока';
-    } else {
-        return 'бонусных уроков';
+// Функция для получения даты +3 дня
+function getFutureDate(daysToAdd) {
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + daysToAdd);
+    const day = currentDate.getDate().toString().padStart(2, '0');
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    const year = currentDate.getFullYear();
+    return `${day}.${month}.${year}`;
+}
+
+// Функция для генерации сообщения с учетом правильного склонения
+function generateMessage() {
+    const selectedPackages = [];
+    const rows = document.querySelectorAll('#lessonPackagesTable tr');
+    const currencyLabel = currencySymbols[currentCurrency]; // Получаем валюту для вывода
+
+    rows.forEach(row => {
+        const checkbox = row.querySelector('.lessonPackageCheckbox');
+        const packageCount = parseInt(checkbox.dataset.package); // Количество уроков в пакете
+        const isChecked = checkbox.checked;
+        const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value); // Количество бонусных уроков
+        const totalLessons = packageCount + bonusLessons; // Общее количество уроков с бонусами
+        const totalCost = lessonPackages[packageCount] ? lessonPackages[packageCount].cost : null; // Общая стоимость пакета
+        const costWithBonuses = totalCost ? (totalCost / totalLessons).toFixed(0) : 0; // Стоимость за урок с бонусами
+        const link = lessonPackages[packageCount] ? lessonPackages[packageCount].link : '';
+
+        if (isChecked && totalCost) {
+            selectedPackages.push({
+                lessons: totalLessons,
+                cost: totalCost,
+                package: packageCount,
+                bonus: bonusLessons,
+                costPerLesson: costWithBonuses,
+                link: link
+            });
+        }
+    });
+
+    if (selectedPackages.length === 0) {
+        return;
     }
+
+    let message = 'Цены на индивидуальные уроки с учителем:\n\n';
+    selectedPackages.forEach(pkg => {
+        const lessonWord = getLessonWord(pkg.package); // Склоняем "урок" в зависимости от количества
+        const bonusWord = getBonusWord(pkg.bonus); // Склоняем "бонусный"
+        const currencyWord = getCurrencyWord(pkg.cost, currencyLabel); // Склоняем валюту
+        
+        if (pkg.bonus > 0) {
+            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}\n`;
+        } else {
+            message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}\n`;
+        }
+
+        message += `Стоимость за урок с бонусами: ${formatCurrency(pkg.costPerLesson)} ${currencyWord}\n`;
+        message += `${pkg.link}\n\n`;
+    });
+
+    message += `🎉 *Предложение действительно до ${getFutureDate(3)}*`;
+
+    const generatedMessageTextarea = document.getElementById('generatedMessage');
+    generatedMessageTextarea.value = message;
+    autoResize(generatedMessageTextarea); // Автоматически подстраиваем высоту после генерации
+}
+
+
+
+
+function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
 }
 
 function copyMessage() {
-    const messageText = document.getElementById('generatedMessage');
-    messageText.select();
+    const generatedMessageTextarea = document.getElementById('generatedMessage');
+    generatedMessageTextarea.select();
     document.execCommand('copy');
-    alert('Сообщение скопировано в буфер обмена');
-}
-
-function setDefaultDate() {
-    const validityDate = document.getElementById('validityDate');
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    validityDate.valueAsDate = tomorrow;
-}
-
-function formatDate(date) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('ru-RU', options);
-}
-
-function resetValues() {
-    const checkboxes = document.querySelectorAll('.lessonPackageCheckbox');
-    checkboxes.forEach(checkbox => checkbox.checked = false);
-
-    const bonusInputs = document.querySelectorAll('.bonusLessonsInput');
-    bonusInputs.forEach(input => input.value = 0);
-
-    setDefaultDate();
-    updateCosts();
+    alert('Сообщение скопировано в буфер обмена!');
 }
