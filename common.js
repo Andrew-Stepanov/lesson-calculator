@@ -6,7 +6,7 @@ let currentDiscountLevel = 'base'; // 'base', 'level1', 'level2', 'oneLesson'
 const minCosts = {
     rub: {
         ru: 1100,
-        en: 1600
+        en: 1900
     },
     usd: {
         ru: 18,
