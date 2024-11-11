@@ -5,11 +5,11 @@ let currentDiscountLevel = 'base'; // 'base', 'level1', 'level2', 'oneLesson'
 // Минимальные значения стоимости для разных валют и языков
 const minCosts = {
     rub: {
-        ru: 1100,
+        ru: 1200,
         en: 1900
     },
     usd: {
-        ru: 18,
+        ru: 20,
         en: 25
     }
 };

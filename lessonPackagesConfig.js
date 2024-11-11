@@ -2,14 +2,14 @@ const lessonPackagesConfig = {
     rub: {
         ru: {
             base: {
-                4: { cost: 6600, link: "https://app.progkids.com/i/buy/four-lessons-new", bonusLessons: 0, selected: false },
-                8: { cost: 12800, link: "https://app.progkids.com/i/buy/eight-lessons-new", bonusLessons: 1, selected: true },
-                16: { cost: 24800, link: "https://app.progkids.com/i/buy/sixteen-lessons-new", bonusLessons: 2, selected: true },
-                24: { cost: 36000, link: "https://app.progkids.com/i/buy/twentyfour-lessons-new", bonusLessons: 3, selected: false },
-                32: { cost: 46400, link: "https://app.progkids.com/i/buy/thirtytwo-lessons-new", bonusLessons: 3, selected: true },
-                40: { cost: 56000, link: "https://app.progkids.com/i/buy/forty-lessons-new", bonusLessons: 4, selected: false },
-                48: { cost: 64800, link: "https://app.progkids.com/i/buy/fortyeight-lessons-new", bonusLessons: 5, selected: true },
-                56: { cost: 72800, link: "https://app.progkids.com/i/buy/fiftysix-lessons-new", bonusLessons: 6, selected: false }
+                4: { cost: 7600, link: "https://app.progkids.com/i/buy/four-lessons-new", bonusLessons: 0, selected: false },
+                8: { cost: 14400, link: "https://app.progkids.com/i/buy/eight-lessons-new", bonusLessons: 1, selected: false },
+                16: { cost: 27200, link: "https://app.progkids.com/i/buy/sixteen-lessons-new", bonusLessons: 2, selected: true },
+                24: { cost: 39600, link: "https://app.progkids.com/i/buy/twentyfour-lessons-new", bonusLessons: 3, selected: false },
+                32: { cost: 51200, link: "https://app.progkids.com/i/buy/thirtytwo-lessons-new", bonusLessons: 3, selected: true },
+                40: { cost: 62000, link: "https://app.progkids.com/i/buy/forty-lessons-new", bonusLessons: 4, selected: false },
+                48: { cost: 72000, link: "https://app.progkids.com/i/buy/fortyeight-lessons-new", bonusLessons: 5, selected: false },
+                56: { cost: 81200, link: "https://app.progkids.com/i/buy/fiftysix-lessons-new", bonusLessons: 6, selected: true }
             },
             level1: {
                 4: { cost: 4800, link: "https://app.progkids.com/i/buy/4800", bonusLessons: 0, selected: true },
