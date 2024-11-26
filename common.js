@@ -223,7 +223,7 @@ function generateMessage() {
         message += `${pkg.link}\n\n`;
     });
 
-    message += `🎉 *Предложение действительно до ${getFutureDate(3)}*`;
+    message += `🎉 *Предложение действительно до ${getFutureDate(1)}*`;
 
     const generatedMessageTextarea = document.getElementById('generatedMessage');
     generatedMessageTextarea.value = message;
