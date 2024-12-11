@@ -217,9 +217,9 @@ function generateMessage() {
         const monthWord = getMonthWord(months); // Склоняем "месяц"
 
         if (pkg.bonus > 0) {
-            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}\nДо ${months} ${monthWord} занятий.\n${pkg.link}\n\n`;
+            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}\n📅 До ${months} ${monthWord} занятий.\n${pkg.link}\n\n`;
         } else {
-            message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}\nДо ${months} ${monthWord} занятий.\n${pkg.link}\n\n`;
+            message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}\n📅 До ${months} ${monthWord} занятий.\n${pkg.link}\n\n`;
         }
     });
 
