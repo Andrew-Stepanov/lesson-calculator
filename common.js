@@ -217,9 +217,9 @@ function generateMessage() {
         const monthWord = getMonthWord(months); // Склоняем "месяц"
 
         if (pkg.bonus > 0) {
-            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}\n📅 До ${months} ${monthWord} занятий.\n${pkg.link}\n\n`;
+            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}\n${months} ${monthWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
         } else {
-            message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}\n📅 До ${months} ${monthWord} занятий.\n${pkg.link}\n\n`;
+            message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}\n${months} ${monthWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
         }
     });
 
@@ -232,8 +232,8 @@ function generateMessage() {
 
 // Функция для склонения слова "месяц"
 function getMonthWord(number) {
-    if (number === 1) return 'месяца';
-    if (number >= 2 && number <= 4) return 'месяцев';
+    if (number === 1) return 'месяц';
+    if (number >= 2 && number <= 4) return 'месяца';
     return 'месяцев';
 }
 
