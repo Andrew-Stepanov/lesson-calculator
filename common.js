@@ -175,7 +175,8 @@ function getFutureDate(daysToAdd) {
     return `${day}.${month}.${year}`;
 }
 
-// Функция для генерации сообщения с учетом правильного склонения
+
+
 function generateMessage() {
     const selectedPackages = [];
     const rows = document.querySelectorAll('#lessonPackagesTable tr');
@@ -212,15 +213,14 @@ function generateMessage() {
         const lessonWord = getLessonWord(pkg.package); // Склоняем "урок" в зависимости от количества
         const bonusWord = getBonusWord(pkg.bonus); // Склоняем "бонусный"
         const currencyWord = getCurrencyWord(pkg.cost, currencyLabel); // Склоняем валюту
-        
-        if (pkg.bonus > 0) {
-            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}\n`;
-        } else {
-            message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}\n`;
-        }
+        const months = Math.floor(pkg.lessons / 4); // Рассчитываем количество месяцев (округляем в меньшую сторону)
+        const monthWord = getMonthWord(months); // Склоняем "месяц"
 
-        message += `Стоимость за урок с бонусами: ${formatCurrency(pkg.costPerLesson)} ${currencyWord}\n`;
-        message += `${pkg.link}\n\n`;
+        if (pkg.bonus > 0) {
+            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}\nДо ${months} ${monthWord} занятий.\n${pkg.link}\n\n`;
+        } else {
+            message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}\nДо ${months} ${monthWord} занятий.\n${pkg.link}\n\n`;
+        }
     });
 
     message += `🎉 *Предложение действительно до ${getFutureDate(1)}*`;
@@ -229,6 +229,14 @@ function generateMessage() {
     generatedMessageTextarea.value = message;
     autoResize(generatedMessageTextarea); // Автоматически подстраиваем высоту после генерации
 }
+
+// Функция для склонения слова "месяц"
+function getMonthWord(number) {
+    if (number === 1) return 'месяца';
+    if (number >= 2 && number <= 4) return 'месяцев';
+    return 'месяцев';
+}
+
 
 
 
