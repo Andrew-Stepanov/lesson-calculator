@@ -76,4 +76,23 @@ const lessonPackagesConfig = {
             }
         }
     }
+    ,
+    eur: {
+        ru: {
+            base: {
+                4: { cost: 140, link: "https://app.progkids.com/i/buy/eur-4", bonusLessons: 0, selected: false },
+                8: { cost: 260, link: "https://app.progkids.com/i/buy/eur-8", bonusLessons: 1, selected: false },
+                16: { cost: 460, link: "https://app.progkids.com/i/buy/eur-16", bonusLessons: 3, selected: true },
+                24: { cost: 640, link: "https://app.progkids.com/i/buy/eur-24", bonusLessons: 4, selected: false },
+                32: { cost: 760, link: "https://app.progkids.com/i/buy/eur-32", bonusLessons: 6, selected: true }
+            }
+        },
+        en: {
+            base: {
+                8: { cost: 360, link: "https://app.progkids.com/i/buy/eur-8-en", bonusLessons: 0, selected: false },
+                16: { cost: 680, link: "https://app.progkids.com/i/buy/eur-16-en", bonusLessons: 3, selected: true },
+                24: { cost: 920, link: "https://app.progkids.com/i/buy/eur-24-en", bonusLessons: 6, selected: true }
+            }
+        }
+    }
 };

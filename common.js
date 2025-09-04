@@ -7,19 +7,24 @@ let lessonPackages = {}; // Явное объявление, чтобы избе
 // Минимальные значения стоимости для разных валют и языков
 const minCosts = {
     rub: {
-        ru: 1200,
+        ru: 1300,
         en: 1900
     },
     usd: {
         ru: 20,
         en: 25
+    },
+    eur: {
+        ru: 18,
+        en: 22
     }
 };
 
 // Символы валют для отображения
 const currencySymbols = {
     rub: 'рублей',
-    usd: 'долларов'
+    usd: 'долларов',
+    eur: 'евро'
 };
 
 function loadLessonPackages() {
@@ -131,8 +136,8 @@ function updateCosts() {
 function copyLink(packageCount) {
     const link = lessonPackages[packageCount].link;
     navigator.clipboard.writeText(link)
-        .then(() => alert('Ссылка скопирована в буфер обмена'))
-        .catch(err => console.error('Ошибка при копировании: ', err));
+        .then(() => showToast('Ссылка скопирована в буфер обмена', 'success'))
+        .catch(err => showToast('Ошибка при копировании ссылки', 'error'));
 }
 
 function formatCurrency(value) {
@@ -164,6 +169,8 @@ function getCurrencyWord(number, currency) {
         if (number === 1 || (number % 10 === 1 && number % 100 !== 11)) return 'доллар';
         if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) return 'доллара';
         return 'долларов';
+    } else if (currency === 'евро') {
+        return 'евро';
     }
 }
 
@@ -253,15 +260,30 @@ function copyMessage() {
     const text = generatedMessageTextarea.value;
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text)
-            .then(() => alert('Сообщение скопировано в буфер обмена!'))
+            .then(() => showToast('Сообщение скопировано', 'success'))
             .catch(() => {
                 generatedMessageTextarea.select();
                 document.execCommand('copy');
-                alert('Сообщение скопировано в буфер обмена!');
+                showToast('Сообщение скопировано', 'success');
             });
     } else {
         generatedMessageTextarea.select();
         document.execCommand('copy');
-        alert('Сообщение скопировано в буфер обмена!');
+        showToast('Сообщение скопировано', 'success');
     }
+}
+
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    // малое тайминговое окно для анимации появления
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 200);
+    }, 2200);
 }
