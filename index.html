@@ -31,6 +31,14 @@
                 </div>
             </div>
 
+            <div class="control-group">
+                <label>Быстрый фильтр:</label>
+                <div class="button-group">
+                    <button onclick="setNoBonuses(false)" id="nobonus-off" class="active">С бонусами</button>
+                    <button onclick="setNoBonuses(true)" id="nobonus-on">Без бонусов</button>
+                </div>
+            </div>
+
         </div>
 
         <div class="container small-content">
@@ -62,7 +70,13 @@
 
     <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
+    <!-- Плавающая кнопка темы -->
+    <button id="theme-toggle" class="theme-fab" aria-label="Переключить тему" title="Переключить тему">🌙</button>
+
     <script src="lessonPackagesConfig.js"></script>
+    <script>window.currencyMeta = currencyMeta; window.lessonPackagesConfig = lessonPackagesConfig;</script>
+    <script src="format.js"></script>
+    <script src="data.js"></script>
     <script src="common.js"></script>
 </body>
 </html>

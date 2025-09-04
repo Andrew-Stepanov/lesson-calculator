@@ -1,3 +1,27 @@
+const currencyMeta = {
+    rub: {
+        label: 'рублей',
+        symbol: '₽',
+        currencyCode: 'RUB',
+        locale: 'ru-RU',
+        minCosts: { ru: 1300, en: 1900 }
+    },
+    usd: {
+        label: 'долларов',
+        symbol: '$',
+        currencyCode: 'USD',
+        locale: 'en-US',
+        minCosts: { ru: 20, en: 25 }
+    },
+    eur: {
+        label: 'евро',
+        symbol: '€',
+        currencyCode: 'EUR',
+        locale: 'de-DE',
+        minCosts: { ru: 18, en: 22 }
+    }
+};
+
 const lessonPackagesConfig = {
     rub: {
         ru: {
@@ -90,11 +114,6 @@ const lessonPackagesConfig = {
         },
         en: {
             base: {
-                8: { cost: 360, link: "https://app.progkids.com/i/buy/eur8", bonusLessons: 0, selected: false },
-                16: { cost: 680, link: "https://app.progkids.com/i/buy/eur16", bonusLessons: 0, selected: true },
-                24: { cost: 920, link: "https://app.progkids.com/i/buy/eur24", bonusLessons: 0, selected: true },
-                32: { cost: 1040, link: "https://app.progkids.com/i/buy/eur32", bonusLessons: 0, selected: true },
-                40: { cost: 1200, link: "https://app.progkids.com/i/buy/eur40", bonusLessons: 0, selected: false }
             }
         }
     }

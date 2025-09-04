@@ -1,45 +1,32 @@
-let currentCurrency = 'rub'; // 'usd' or 'rub'
+let currentCurrency = 'rub'; // 'rub', 'usd', 'eur'
 let currentLanguage = 'ru'; // 'ru' or 'en'
 let currentDiscountLevel = 'base'; // 'base', 'level1', 'level2', 'oneLesson'
 
 let lessonPackages = {}; // Явное объявление, чтобы избежать неявной глобальной переменной
-
-// Минимальные значения стоимости для разных валют и языков
-const minCosts = {
-    rub: {
-        ru: 1300,
-        en: 1900
-    },
-    usd: {
-        ru: 20,
-        en: 25
-    },
-    eur: {
-        ru: 18,
-        en: 22
-    }
-};
-
-// Символы валют для отображения
-const currencySymbols = {
-    rub: 'рублей',
-    usd: 'долларов',
-    eur: 'евро'
-};
+let noBonusesMode = false; // быстрый фильтр "без бонусов"
 
 function loadLessonPackages() {
-    if (!lessonPackagesConfig[currentCurrency] || !lessonPackagesConfig[currentCurrency][currentLanguage]) {
-        console.error(`Данные для валюты "${currentCurrency}" и языка "${currentLanguage}" не найдены.`);
-        return {}; // Возвращаем пустой объект, чтобы избежать ошибок
-    }
-    return lessonPackagesConfig[currentCurrency][currentLanguage][currentDiscountLevel];
+    return window.Data.loadLessonPackages(currentCurrency, currentLanguage, currentDiscountLevel);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    initTheme();
+    // восстановить выбор noBonuses из localStorage
+    const savedNoBonus = localStorage.getItem('noBonusesMode');
+    if (savedNoBonus === 'true') {
+        noBonusesMode = true;
+        const on = document.getElementById('nobonus-on');
+        const off = document.getElementById('nobonus-off');
+        if (on && off) { on.classList.add('active'); off.classList.remove('active'); }
+        document.documentElement.classList.add('no-bonuses');
+    }
     lessonPackages = loadLessonPackages();
     populateTable();
+    attachTableHandlers();
     updateCosts();
     generateMessage(); // Генерация сообщения при загрузке страницы
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 });
 
 function changeCurrency(currency) {
@@ -68,6 +55,45 @@ function changeDiscountLevel(level) {
     updateCosts();
     generateMessage(); // Генерация сообщения при изменении уровня скидок
 }
+function attachTableHandlers() {
+    const tbody = document.getElementById('lessonPackagesTable');
+    if (!tbody) return;
+    tbody.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.classList.contains('copy-button')) {
+            const pkg = Number(target.dataset.package);
+            if (lessonPackages[pkg] && lessonPackages[pkg].link) copyLink(pkg);
+        }
+        if (target.classList.contains('lessonPackageCheckbox')) {
+            generateMessage();
+        }
+    });
+    tbody.addEventListener('input', (e) => {
+        const target = e.target;
+        if (target.classList.contains('bonusLessonsInput')) {
+            updateCosts();
+            generateMessage();
+        }
+    });
+}
+
+function initTheme() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved ? saved : (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = next === 'light' ? '🌙' : '☀️';
+}
 
 function updateButtonGroup(group, selectedValue) {
     const buttons = document.querySelectorAll(`.button-group button[id^='${group}']`);
@@ -78,6 +104,27 @@ function updateButtonGroup(group, selectedValue) {
             button.classList.remove('active');
         }
     });
+}
+
+function setNoBonuses(flag) {
+    noBonusesMode = Boolean(flag);
+    // переключаем визуальное состояние кнопок фильтра
+    const on = document.getElementById('nobonus-on');
+    const off = document.getElementById('nobonus-off');
+    if (on && off) {
+        if (noBonusesMode) {
+            on.classList.add('active');
+            off.classList.remove('active');
+            document.documentElement.classList.add('no-bonuses');
+        } else {
+            off.classList.add('active');
+            on.classList.remove('active');
+            document.documentElement.classList.remove('no-bonuses');
+        }
+    }
+    localStorage.setItem('noBonusesMode', String(noBonusesMode));
+    updateCosts();
+    generateMessage();
 }
 
 function populateTable() {
@@ -91,44 +138,87 @@ function populateTable() {
     }
 
     Object.keys(lessonPackages).forEach(key => {
+        const pkgCount = Number(key);
         const packageData = lessonPackages[key];
-        const costFormatted = packageData.cost ? formatCurrency(packageData.cost) : '—';
-        const costPerLessonFormatted = packageData.cost ? formatCurrency(Math.ceil(packageData.cost / key)) : '—';
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><input type="checkbox" class="lessonPackageCheckbox" data-package="${key}" ${packageData.selected ? 'checked' : ''} onchange="generateMessage()"></td>
-            <td>${key} ${getLessonWord(key)} <button class="copy-button" onclick="copyLink('${key}')">🔗</button></td>
-            <td>${costFormatted}</td>
-            <td>${costPerLessonFormatted}</td>
-            <td><input type="number" class="bonusLessonsInput" data-package="${key}" value="${packageData.bonusLessons || 0}" min="0" onchange="updateCosts(); generateMessage()"></td>
-            <td class="costWithBonuses" data-package="${key}"></td>
-        `;
-        tableBody.appendChild(row);
+        const tr = document.createElement('tr');
+
+        const tdSelect = document.createElement('td');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'lessonPackageCheckbox';
+        checkbox.dataset.package = String(pkgCount);
+        checkbox.checked = Boolean(packageData.selected);
+        tdSelect.appendChild(checkbox);
+
+        const tdName = document.createElement('td');
+        tdName.appendChild(document.createTextNode(`${pkgCount} ${window.Format.getLessonWord(pkgCount)} `));
+        const linkBtn = document.createElement('button');
+        linkBtn.className = 'copy-button';
+        linkBtn.textContent = '🔗';
+        linkBtn.dataset.package = String(pkgCount);
+        tdName.appendChild(linkBtn);
+
+        const tdTotal = document.createElement('td');
+        tdTotal.textContent = packageData.cost ? window.Format.formatSpaced(packageData.cost) : '—';
+
+        const tdPerLesson = document.createElement('td');
+        const per = (packageData.cost && pkgCount) ? Math.ceil(Number(packageData.cost) / pkgCount) : null;
+        tdPerLesson.textContent = per !== null ? window.Format.formatSpaced(per) : '—';
+
+        const tdBonus = document.createElement('td');
+        const bonusInput = document.createElement('input');
+        bonusInput.type = 'number';
+        bonusInput.min = '0';
+        bonusInput.className = 'bonusLessonsInput';
+        bonusInput.dataset.package = String(pkgCount);
+        bonusInput.value = String(Number(packageData.bonusLessons || 0));
+        tdBonus.appendChild(bonusInput);
+
+        const tdCostWithBonus = document.createElement('td');
+        tdCostWithBonus.className = 'costWithBonuses';
+        tdCostWithBonus.dataset.package = String(pkgCount);
+
+        tr.appendChild(tdSelect);
+        tr.appendChild(tdName);
+        tr.appendChild(tdTotal);
+        tr.appendChild(tdPerLesson);
+        tr.appendChild(tdBonus);
+        tr.appendChild(tdCostWithBonus);
+
+        tableBody.appendChild(tr);
     });
     updateCosts(); // Обновляем стоимость после заполнения таблицы
 }
 
 function updateCosts() {
     const rows = document.querySelectorAll('#lessonPackagesTable tr');
-    const minCost = minCosts[currentCurrency][currentLanguage]; // Минимальная стоимость для текущей валюты и языка
+    const minCost = window.Data.getMinCost(currentCurrency, currentLanguage); // Минимальная стоимость для текущей валюты и языка
 
     rows.forEach(row => {
-        const packageCount = parseInt(row.querySelector('.lessonPackageCheckbox').dataset.package, 10);
-        const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value, 10);
+        const pkgEl = row.querySelector('.lessonPackageCheckbox');
+        const bonusEl = row.querySelector('.bonusLessonsInput');
+        if (!pkgEl || !bonusEl) return;
+        const packageCount = Number(pkgEl.dataset.package);
+        let bonusLessons = noBonusesMode ? 0 : Number(bonusEl.value);
+        if (!Number.isFinite(bonusLessons) || bonusLessons < 0) bonusLessons = 0;
+        const totalCost = lessonPackages[packageCount] ? Number(lessonPackages[packageCount].cost) : NaN;
         const totalLessons = packageCount + bonusLessons;
-        const totalCost = lessonPackages[packageCount] ? lessonPackages[packageCount].cost : null;
-        const costWithBonuses = totalCost ? Math.ceil(totalCost / totalLessons) : 0;
         const costCell = row.querySelector('.costWithBonuses');
-        costCell.textContent = formatCurrency(costWithBonuses);
-
-        // Подсвечиваем, если стоимость за урок ниже минимальной
-        if (costWithBonuses < minCost) {
+        if (!Number.isFinite(totalCost) || !Number.isFinite(totalLessons) || totalLessons <= 0) {
+            costCell.textContent = '—';
+            costCell.classList.remove('warning');
+            costCell.title = '';
+            return;
+        }
+        const costWithBonuses = Math.ceil(totalCost / totalLessons);
+        costCell.textContent = window.Format.formatSpaced(costWithBonuses);
+        if (Number.isFinite(minCost) && costWithBonuses < minCost) {
             costCell.classList.add('warning');
-            costCell.title = `Стоимость за урок ниже минимальной (${formatCurrency(minCost)})!`;
+            costCell.title = `Стоимость за урок ниже минимальной (${window.Format.formatSpaced(minCost)})!`;
         } else {
             costCell.classList.remove('warning');
-            costCell.title = "";
+            costCell.title = '';
         }
     });
 }
@@ -141,38 +231,10 @@ function copyLink(packageCount) {
 }
 
 function formatCurrency(value) {
-    if (value === null || value === undefined) return '—';
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return window.Format.formatSpaced(value);
 }
 
-// Функция для склонения слова "урок"
-function getLessonWord(number) {
-    if (number === 1 || (number % 10 === 1 && number % 100 !== 11)) return 'урок';
-    if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) return 'урока';
-    return 'уроков';
-}
-
-// Функция для склонения слова "бонусный"
-function getBonusWord(number) {
-    if (number === 1 || (number % 10 === 1 && number % 100 !== 11)) return 'бонусный';
-    if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) return 'бонусных';
-    return 'бонусных';
-}
-
-// Функция для склонения слова "рубль" и "доллар"
-function getCurrencyWord(number, currency) {
-    if (currency === 'рублей') {
-        if (number === 1 || (number % 10 === 1 && number % 100 !== 11)) return 'рубль';
-        if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) return 'рубля';
-        return 'рублей';
-    } else if (currency === 'долларов') {
-        if (number === 1 || (number % 10 === 1 && number % 100 !== 11)) return 'доллар';
-        if ([2, 3, 4].includes(number % 10) && ![12, 13, 14].includes(number % 100)) return 'доллара';
-        return 'долларов';
-    } else if (currency === 'евро') {
-        return 'евро';
-    }
-}
+// Склонения и форматирование перенесены в Format
 
 // Функция для получения даты +3 дня
 function getFutureDate(daysToAdd) {
@@ -189,14 +251,15 @@ function getFutureDate(daysToAdd) {
 function generateMessage() {
     const selectedPackages = [];
     const rows = document.querySelectorAll('#lessonPackagesTable tr');
-    const currencyLabel = currencySymbols[currentCurrency]; // Получаем валюту для вывода
+    const meta = window.Data.getCurrencyMeta(currentCurrency) || { label: '' };
+    const currencyLabel = meta.label; // Получаем валюту для вывода
 
     rows.forEach(row => {
         const checkbox = row.querySelector('.lessonPackageCheckbox');
         const packageCount = parseInt(checkbox.dataset.package, 10); // Количество уроков в пакете
         const isChecked = checkbox.checked;
-        const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value, 10); // Количество бонусных уроков
-        const totalLessons = packageCount + bonusLessons; // Общее количество уроков с бонусами
+        const bonusLessons = noBonusesMode ? 0 : parseInt(row.querySelector('.bonusLessonsInput').value, 10); // Количество бонусных уроков
+        const totalLessons = packageCount + (noBonusesMode ? 0 : bonusLessons); // Общее количество уроков с бонусами
         const totalCost = lessonPackages[packageCount] ? lessonPackages[packageCount].cost : null; // Общая стоимость пакета
         const costWithBonuses = totalCost ? (totalCost / totalLessons).toFixed(0) : 0; // Стоимость за урок с бонусами
         const link = lessonPackages[packageCount] ? lessonPackages[packageCount].link : '';
@@ -219,14 +282,14 @@ function generateMessage() {
 
     let message = 'Цены на индивидуальные уроки с учителем:\n\n';
     selectedPackages.forEach(pkg => {
-        const lessonWord = getLessonWord(pkg.package); // Склоняем "урок" в зависимости от количества
-        const bonusWord = getBonusWord(pkg.bonus); // Склоняем "бонусный"
-        const currencyWord = getCurrencyWord(pkg.cost, currencyLabel); // Склоняем валюту
+        const lessonWord = window.Format.getLessonWord(pkg.package);
+        const bonusWord = window.Format.getBonusWord(pkg.bonus);
+        const currencyWord = window.Format.getCurrencyWord(pkg.cost, currencyLabel);
         const months = Math.floor(pkg.lessons / 4); // Рассчитываем количество месяцев (округляем в меньшую сторону)
-        const monthWord = getMonthWord(months); // Склоняем "месяц"
+        const monthWord = window.Format.getMonthWord(months);
 
-        if (pkg.bonus > 0) {
-            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}\n${months} ${monthWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
+        if (!noBonusesMode && pkg.bonus > 0) {
+            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${window.Format.getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}\n${months} ${monthWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
         } else {
             message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}\n${months} ${monthWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
         }
