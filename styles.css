@@ -89,3 +89,19 @@
     color: red;
     font-weight: bold;
 }
+
+/* Общие стили для кнопок копирования ссылок в таблице */
+.copy-button {
+    padding: 4px 8px;
+    margin-left: 6px;
+    font-size: 0.9em;
+    border: 1px solid #4CAF50;
+    background-color: white;
+    color: #4CAF50;
+    border-radius: 3px;
+}
+
+.copy-button:hover {
+    background-color: #45a049;
+    color: white;
+}

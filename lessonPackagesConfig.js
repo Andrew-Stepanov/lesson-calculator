@@ -21,8 +21,8 @@ const lessonPackagesConfig = {
                 8: { cost: 8600, link: "https://app.progkids.com/i/buy/8400", bonusLessons: 0, selected: true }
             },
             oneLesson: {
-                '1': { cost: 1900, link: "https://app.progkids.com/i/buy/one-lesson", selected: false },
-                '1.': { cost: 1600, link: "https://app.progkids.com/i/buy/one-lesson-new", selected: true }
+                1: { cost: 1900, link: "https://app.progkids.com/i/buy/one-lesson", selected: false },
+                2: { cost: 1600, link: "https://app.progkids.com/i/buy/one-lesson-new", selected: true }
             }
         },
         en: {
@@ -37,7 +37,7 @@ const lessonPackagesConfig = {
     usd: {
         ru: {
             base: {
-                4: { cost: 152, link: " https://app.progkids.com/i/buy/122-4", bonusLessons: 0, selected: false },
+                4: { cost: 152, link: "https://app.progkids.com/i/buy/122-4", bonusLessons: 0, selected: false },
                 8: { cost: 280, link: "https://app.progkids.com/i/buy/122-8", bonusLessons: 1, selected: false },
                 16: { cost: 496, link: "https://app.progkids.com/i/buy/122-16", bonusLessons: 4, selected: true },
                 24: { cost: 696, link: "https://app.progkids.com/i/buy/122-24", bonusLessons: 4, selected: false },

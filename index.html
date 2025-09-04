@@ -57,17 +57,5 @@
 
     <script src="lessonPackagesConfig.js"></script>
     <script src="common.js"></script>
-    <script>
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = (textarea.scrollHeight) + 'px';
-        }
-
-        // После загрузки текста в textarea, вызываем autoResize для корректной высоты
-        document.addEventListener('DOMContentLoaded', function() {
-            const textarea = document.getElementById('generatedMessage');
-            autoResize(textarea); // Устанавливаем высоту при первой загрузке
-        });
-    </script>
 </body>
 </html>

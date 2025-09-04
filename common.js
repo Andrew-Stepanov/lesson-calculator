@@ -2,6 +2,8 @@ let currentCurrency = 'rub'; // 'usd' or 'rub'
 let currentLanguage = 'ru'; // 'ru' or 'en'
 let currentDiscountLevel = 'base'; // 'base', 'level1', 'level2', 'oneLesson'
 
+let lessonPackages = {}; // Явное объявление, чтобы избежать неявной глобальной переменной
+
 // Минимальные значения стоимости для разных валют и языков
 const minCosts = {
     rub: {
@@ -107,8 +109,8 @@ function updateCosts() {
     const minCost = minCosts[currentCurrency][currentLanguage]; // Минимальная стоимость для текущей валюты и языка
 
     rows.forEach(row => {
-        const packageCount = parseInt(row.querySelector('.lessonPackageCheckbox').dataset.package);
-        const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value);
+        const packageCount = parseInt(row.querySelector('.lessonPackageCheckbox').dataset.package, 10);
+        const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value, 10);
         const totalLessons = packageCount + bonusLessons;
         const totalCost = lessonPackages[packageCount] ? lessonPackages[packageCount].cost : null;
         const costWithBonuses = totalCost ? Math.ceil(totalCost / totalLessons) : 0;
@@ -134,7 +136,7 @@ function copyLink(packageCount) {
 }
 
 function formatCurrency(value) {
-    if (!value) return '—'; // Добавим проверку на null или undefined
+    if (value === null || value === undefined) return '—';
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
@@ -184,9 +186,9 @@ function generateMessage() {
 
     rows.forEach(row => {
         const checkbox = row.querySelector('.lessonPackageCheckbox');
-        const packageCount = parseInt(checkbox.dataset.package); // Количество уроков в пакете
+        const packageCount = parseInt(checkbox.dataset.package, 10); // Количество уроков в пакете
         const isChecked = checkbox.checked;
-        const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value); // Количество бонусных уроков
+        const bonusLessons = parseInt(row.querySelector('.bonusLessonsInput').value, 10); // Количество бонусных уроков
         const totalLessons = packageCount + bonusLessons; // Общее количество уроков с бонусами
         const totalCost = lessonPackages[packageCount] ? lessonPackages[packageCount].cost : null; // Общая стоимость пакета
         const costWithBonuses = totalCost ? (totalCost / totalLessons).toFixed(0) : 0; // Стоимость за урок с бонусами
@@ -248,7 +250,18 @@ function autoResize(textarea) {
 
 function copyMessage() {
     const generatedMessageTextarea = document.getElementById('generatedMessage');
-    generatedMessageTextarea.select();
-    document.execCommand('copy');
-    alert('Сообщение скопировано в буфер обмена!');
+    const text = generatedMessageTextarea.value;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+            .then(() => alert('Сообщение скопировано в буфер обмена!'))
+            .catch(() => {
+                generatedMessageTextarea.select();
+                document.execCommand('copy');
+                alert('Сообщение скопировано в буфер обмена!');
+            });
+    } else {
+        generatedMessageTextarea.select();
+        document.execCommand('copy');
+        alert('Сообщение скопировано в буфер обмена!');
+    }
 }
