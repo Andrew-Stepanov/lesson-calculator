@@ -89,9 +89,9 @@ const lessonPackagesConfig = {
         en: {
             base: {
                 8: { cost: 384, link: "https://app.progkids.com/i/buy/8-usa", bonusLessons: 0, selected: false },
-                16: { cost: 720, link: "https://app.progkids.com/i/buy/16-usa", bonusLessons: 4, selected: true },
-                24: { cost: 984, link: "https://app.progkids.com/i/buy/24-usa", bonusLessons: 8, selected: true },
-                32: { cost: 1120, link: "https://app.progkids.com/i/buy/32-usa", bonusLessons: 8, selected: true }
+                16: { cost: 720, link: "https://app.progkids.com/i/buy/16-usa", bonusLessons: 2, selected: true },
+                24: { cost: 984, link: "https://app.progkids.com/i/buy/24-usa", bonusLessons: 4, selected: true },
+                32: { cost: 1120, link: "https://app.progkids.com/i/buy/32-usa", bonusLessons: 4, selected: true }
             },
             level1: {
                 8: { cost: 246, link: "https://app.progkids.com/i/buy/122-8", bonusLessons: 0, selected: true },
