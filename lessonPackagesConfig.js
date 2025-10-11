@@ -62,13 +62,13 @@ const lessonPackagesConfig = {
         ru: {
             base: {
                 4: { cost: 152, link: "https://app.progkids.com/i/buy/122-4", bonusLessons: 0, selected: false },
-                8: { cost: 280, link: "https://app.progkids.com/i/buy/122-8", bonusLessons: 1, selected: false },
-                16: { cost: 496, link: "https://app.progkids.com/i/buy/122-16", bonusLessons: 4, selected: true },
-                24: { cost: 696, link: "https://app.progkids.com/i/buy/122-24", bonusLessons: 4, selected: false },
-                32: { cost: 800, link: "https://app.progkids.com/i/buy/122-32", bonusLessons: 6, selected: true },
-                40: { cost: 960, link: "https://app.progkids.com/i/buy/122-40", bonusLessons:6, selected: false },
-                48: { cost: 1104, link: "https://app.progkids.com/i/buy/122-48", bonusLessons: 6, selected: false },
-                56: { cost: 1232, link: "https://app.progkids.com/i/buy/122-56", bonusLessons: 10, selected: true }
+                8: { cost: 280, link: "https://app.progkids.com/i/buy/122-8", bonusLessons: 2, selected: false },
+                16: { cost: 496, link: "https://app.progkids.com/i/buy/122-16", bonusLessons: 2, selected: true },
+                24: { cost: 696, link: "https://app.progkids.com/i/buy/122-24", bonusLessons: 2, selected: false },
+                32: { cost: 800, link: "https://app.progkids.com/i/buy/122-32", bonusLessons: 2, selected: true },
+                40: { cost: 960, link: "https://app.progkids.com/i/buy/122-40", bonusLessons: 2, selected: false },
+                48: { cost: 1104, link: "https://app.progkids.com/i/buy/122-48", bonusLessons: 3, selected: false },
+                56: { cost: 1232, link: "https://app.progkids.com/i/buy/122-56", bonusLessons: 4, selected: true }
             },
             level1: {
                 8: { cost: 216, link: "https://app.progkids.com/i/buy/199-8", bonusLessons: 1, selected: true },
