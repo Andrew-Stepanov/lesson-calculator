@@ -106,10 +106,10 @@ const lessonPackagesConfig = {
             base: {
                 4: { cost: 152, link: "https://app.progkids.com/i/buy/eur4", bonusLessons: 0, selected: false },
                 8: { cost: 280, link: "https://app.progkids.com/i/buy/eur8", bonusLessons: 1, selected: false },
-                16: { cost: 496, link: "https://app.progkids.com/i/buy/eur16", bonusLessons: 4, selected: true },
-                24: { cost: 696, link: "https://app.progkids.com/i/buy/eur24", bonusLessons: 4, selected: false },
-                32: { cost: 800, link: "https://app.progkids.com/i/buy/eur32", bonusLessons: 8, selected: true },
-                40: { cost: 960, link: "https://app.progkids.com/i/buy/eur40", bonusLessons: 8, selected: false }
+                16: { cost: 496, link: "https://app.progkids.com/i/buy/eur16", bonusLessons: 2, selected: true },
+                24: { cost: 696, link: "https://app.progkids.com/i/buy/eur24", bonusLessons: 2, selected: false },
+                32: { cost: 800, link: "https://app.progkids.com/i/buy/eur32", bonusLessons: 3, selected: true },
+                40: { cost: 960, link: "https://app.progkids.com/i/buy/eur40", bonusLessons: 4, selected: false }
             }
         },
         en: {
