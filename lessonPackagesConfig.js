@@ -35,18 +35,9 @@ const lessonPackagesConfig = {
                 48: { cost: 72000, link: "https://app.progkids.com/i/buy/fortyeight-lessons-new", bonusLessons: 3, selected: false },
                 56: { cost: 81200, link: "https://app.progkids.com/i/buy/fiftysix-lessons-new", bonusLessons: 4, selected: true }
             },
-            level1: {
-                4: { cost: 5600, link: "https://app.progkids.com/i/buy/4800", bonusLessons: 0, selected: true },
-                8: { cost: 9800, link: "https://app.progkids.com/i/buy/9200", bonusLessons: 0, selected: true },
-                16: { cost: 18400, link: "https://app.progkids.com/i/buy/16800", bonusLessons: 0, selected: true }
-            },
-            level2: {
-                4: { cost: 4400, link: "https://app.progkids.com/i/buy/4400", bonusLessons: 0, selected: true },
-                8: { cost: 8600, link: "https://app.progkids.com/i/buy/8400", bonusLessons: 0, selected: true }
-            },
-            oneLesson: {
-                1: { cost: 1900, link: "https://app.progkids.com/i/buy/one-lesson", selected: false },
-                2: { cost: 1600, link: "https://app.progkids.com/i/buy/one-lesson-new", selected: true }
+            recurring: {
+                4: { cost: 5700, link: "https://app.progkids.com/i/buy/5700-4", bonusLessons: 0, selected: true, isRecurring: true, description: "Рекуррентный платеж каждые 30 дней" },
+                "4-auto": { cost: 6000, link: "https://app.progkids.com/i/buy/auto-4-ru", bonusLessons: 0, selected: true, isRecurring: true, description: "Рекуррентный платеж каждые 30 дней" }
             }
         },
         en: {
@@ -70,21 +61,6 @@ const lessonPackagesConfig = {
                 48: { cost: 1104, link: "https://app.progkids.com/i/buy/122-48", bonusLessons: 3, selected: false },
                 56: { cost: 1232, link: "https://app.progkids.com/i/buy/122-56", bonusLessons: 4, selected: true }
             },
-            level1: {
-                8: { cost: 216, link: "https://app.progkids.com/i/buy/199-8", bonusLessons: 1, selected: true },
-                16: { cost: 399, link: "https://app.progkids.com/i/buy/399-16", bonusLessons: 2, selected: true },
-                24: { cost: 549, link: "https://app.progkids.com/i/buy/549-24", bonusLessons: 2, selected: true }
-            },
-            level2: {
-                4: { cost: 88, link: "https://app.progkids.com/i/buy/nov21-4", bonusLessons: 0, selected: false },
-                8: { cost: 168, link: "https://app.progkids.com/i/buy/nov21-8", bonusLessons: 0, selected: true },
-                16: { cost: 320, link: "https://app.progkids.com/i/buy/nov21-16", bonusLessons: 0, selected: true },
-                24: { cost: 456, link: "https://app.progkids.com/i/buy/nov21-24", bonusLessons: 0, selected: true }
-            },
-            oneLesson: {
-                1: { cost: 25, link: "https://app.progkids.com/i/buy/1-l", bonusLessons: 0, selected: true },
-                2: { cost: 48, link: "https://app.progkids.com/i/buy/2-l", bonusLessons: 0, selected: false }
-            }
         },
         en: {
             base: {
@@ -93,11 +69,6 @@ const lessonPackagesConfig = {
                 24: { cost: 984, link: "https://app.progkids.com/i/buy/24-usa", bonusLessons: 4, selected: true },
                 32: { cost: 1120, link: "https://app.progkids.com/i/buy/32-usa", bonusLessons: 4, selected: true }
             },
-            level1: {
-                8: { cost: 246, link: "https://app.progkids.com/i/buy/122-8", bonusLessons: 0, selected: true },
-                16: { cost: 480, link: "https://app.progkids.com/i/buy/122-16", bonusLessons: 0, selected: true },
-                24: { cost: 700, link: "https://app.progkids.com/i/buy/122-24", bonusLessons: 0, selected: true }
-            }
         }
     }
     ,
