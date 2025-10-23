@@ -32,10 +32,27 @@
             </div>
 
             <div class="control-group">
+                <label>Тип уроков:</label>
+                <div class="button-group">
+                    <button onclick="changeLessonType('individual')" id="lesson-individual" class="active">Индивидуальные</button>
+                    <button onclick="changeLessonType('group')" id="lesson-group">Групповые</button>
+                </div>
+            </div>
+
+            <div class="control-group" id="individual-tariff-group">
                 <label>Тип тарифа:</label>
                 <div class="button-group">
                     <button onclick="changeDiscountLevel('base')" id="discount-base" class="active">Базовые</button>
+                    <button onclick="changeDiscountLevel('discount')" id="discount-discount">Скидочные</button>
                     <button onclick="changeDiscountLevel('recurring')" id="discount-recurring">Рекуррентные</button>
+                </div>
+            </div>
+
+            <div class="control-group" id="group-tariff-group" style="display: none;">
+                <label>Тип тарифа:</label>
+                <div class="button-group">
+                    <button onclick="changeDiscountLevel('group')" id="discount-group" class="active">Обычные</button>
+                    <button onclick="changeDiscountLevel('groupDiscount')" id="discount-groupDiscount">Скидочные</button>
                 </div>
             </div>
 
@@ -50,7 +67,7 @@
         </div>
 
         <div class="container small-content">
-            <h3>Выберите пакеты уроков и укажите количество бонусных уроков:</h3>
+            <h3 id="table-title">Выберите пакеты уроков и укажите количество бонусных уроков:</h3>
             <table>
                 <thead>
                     <tr>

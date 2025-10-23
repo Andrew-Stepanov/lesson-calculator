@@ -103,6 +103,12 @@ body {
     gap: 12px;
 }
 
+@media (max-width: 1200px) {
+    .controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 .control-group label {
     display: block;
     margin-bottom: 8px;

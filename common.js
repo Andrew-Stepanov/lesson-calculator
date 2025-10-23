@@ -1,6 +1,7 @@
 let currentCurrency = 'rub'; // 'rub', 'usd', 'eur'
 let currentLanguage = 'ru'; // 'ru' or 'en'
-let currentDiscountLevel = 'base'; // 'base', 'level1', 'level2', 'oneLesson'
+let currentLessonType = 'individual'; // 'individual' or 'group'
+let currentDiscountLevel = 'base'; // 'base', 'discount', 'recurring', 'group', 'groupDiscount'
 
 let lessonPackages = {}; // Явное объявление, чтобы избежать неявной глобальной переменной
 let noBonusesMode = false; // быстрый фильтр "без бонусов"
@@ -45,6 +46,35 @@ function changeLanguage(language) {
     populateTable();
     updateCosts();
     generateMessage(); // Генерация сообщения при изменении языка
+}
+
+function changeLessonType(lessonType) {
+    currentLessonType = lessonType;
+    updateButtonGroup('lesson', lessonType);
+    
+    // Переключаем видимость групп тарифов
+    const individualGroup = document.getElementById('individual-tariff-group');
+    const groupGroup = document.getElementById('group-tariff-group');
+    const tableTitle = document.getElementById('table-title');
+    
+    if (lessonType === 'individual') {
+        individualGroup.style.display = 'block';
+        groupGroup.style.display = 'none';
+        currentDiscountLevel = 'base';
+        updateButtonGroup('discount', 'base');
+        tableTitle.textContent = 'Выберите пакеты уроков и укажите количество бонусных уроков:';
+    } else {
+        individualGroup.style.display = 'none';
+        groupGroup.style.display = 'block';
+        currentDiscountLevel = 'group';
+        updateButtonGroup('discount', 'group');
+        tableTitle.textContent = 'Выберите пакеты групповых уроков по Roblox:';
+    }
+    
+    lessonPackages = loadLessonPackages();
+    populateTable();
+    updateCosts();
+    generateMessage();
 }
 
 function changeDiscountLevel(level) {
@@ -143,7 +173,17 @@ function populateTable() {
         return;
     }
 
-    Object.keys(lessonPackages).forEach(key => {
+    // Сортируем ключи по порядку для групповых уроков
+    let sortedKeys = Object.keys(lessonPackages);
+    if (currentLessonType === 'group') {
+        sortedKeys = sortedKeys.sort((a, b) => {
+            const orderA = lessonPackages[a].order || 0;
+            const orderB = lessonPackages[b].order || 0;
+            return orderA - orderB;
+        });
+    }
+
+    sortedKeys.forEach(key => {
         const pkgCount = key.includes('-') ? key : Number(key);
         const packageData = lessonPackages[key];
 
@@ -153,13 +193,31 @@ function populateTable() {
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.className = 'lessonPackageCheckbox';
-        checkbox.dataset.package = String(pkgCount);
+        checkbox.dataset.package = String(key); // Используем сам ключ
         checkbox.checked = Boolean(packageData.selected);
         tdSelect.appendChild(checkbox);
 
         const tdName = document.createElement('td');
-        const lessonCount = typeof pkgCount === 'string' ? parseInt(pkgCount.split('-')[0]) : pkgCount;
-        let packageText = `${lessonCount} ${window.Format.getLessonWord(lessonCount)}`;
+        let lessonCount, packageText;
+        
+        if (currentLessonType === 'group') {
+            // Для групповых уроков используем данные из конфигурации
+            lessonCount = packageData.lessons || 0;
+            const moduleNames = {
+                'mod1': '1 модуль',
+                'mod2': '2 модуль', 
+                'mod3': '3 модуль',
+                'mod4': '4 модуль',
+                'mod5': '5 модуль',
+                'mod6': '6 модуль',
+                'mod7': '7 модуль'
+            };
+            packageText = moduleNames[key] || `${lessonCount} уроков`;
+        } else {
+            lessonCount = typeof pkgCount === 'string' ? parseInt(pkgCount.split('-')[0]) : pkgCount;
+            packageText = `${lessonCount} ${window.Format.getLessonWord(lessonCount)}`;
+        }
+        
         if (packageData.description) {
             packageText += ` (${packageData.description})`;
         }
@@ -167,7 +225,7 @@ function populateTable() {
         const linkBtn = document.createElement('button');
         linkBtn.className = 'copy-button';
         linkBtn.textContent = '🔗';
-        linkBtn.dataset.package = String(pkgCount);
+        linkBtn.dataset.package = String(key); // Используем сам ключ
         tdName.appendChild(linkBtn);
 
         const tdTotal = document.createElement('td');
@@ -182,13 +240,13 @@ function populateTable() {
         bonusInput.type = 'number';
         bonusInput.min = '0';
         bonusInput.className = 'bonusLessonsInput';
-        bonusInput.dataset.package = String(pkgCount);
+        bonusInput.dataset.package = String(key); // Используем сам ключ
         bonusInput.value = String(Number(packageData.bonusLessons || 0));
         tdBonus.appendChild(bonusInput);
 
         const tdCostWithBonus = document.createElement('td');
         tdCostWithBonus.className = 'costWithBonuses';
-        tdCostWithBonus.dataset.package = String(pkgCount);
+        tdCostWithBonus.dataset.package = String(key); // Используем сам ключ
 
         tr.appendChild(tdSelect);
         tr.appendChild(tdName);
@@ -211,7 +269,12 @@ function updateCosts() {
         const bonusEl = row.querySelector('.bonusLessonsInput');
         if (!pkgEl || !bonusEl) return;
         const packageKey = pkgEl.dataset.package;
-        const packageCount = packageKey.includes('-') ? parseInt(packageKey.split('-')[0]) : Number(packageKey);
+        let packageCount;
+        if (currentLessonType === 'group') {
+            packageCount = lessonPackages[packageKey] ? lessonPackages[packageKey].lessons : 0;
+        } else {
+            packageCount = packageKey.includes('-') ? parseInt(packageKey.split('-')[0]) : Number(packageKey);
+        }
         let bonusLessons = noBonusesMode ? 0 : Number(bonusEl.value);
         if (!Number.isFinite(bonusLessons) || bonusLessons < 0) bonusLessons = 0;
         const totalCost = lessonPackages[packageKey] ? Number(lessonPackages[packageKey].cost) : NaN;
@@ -269,7 +332,12 @@ function generateMessage() {
     rows.forEach(row => {
         const checkbox = row.querySelector('.lessonPackageCheckbox');
         const packageKey = checkbox.dataset.package; // Ключ пакета (может быть строкой)
-        const packageCount = packageKey.includes('-') ? parseInt(packageKey.split('-')[0]) : parseInt(packageKey, 10); // Количество уроков в пакете
+        let packageCount;
+        if (currentLessonType === 'group') {
+            packageCount = lessonPackages[packageKey] ? lessonPackages[packageKey].lessons : 0;
+        } else {
+            packageCount = packageKey.includes('-') ? parseInt(packageKey.split('-')[0]) : parseInt(packageKey, 10);
+        }
         const isChecked = checkbox.checked;
         const bonusLessons = noBonusesMode ? 0 : parseInt(row.querySelector('.bonusLessonsInput').value, 10); // Количество бонусных уроков
         const totalLessons = packageCount + (noBonusesMode ? 0 : bonusLessons); // Общее количество уроков с бонусами
@@ -282,6 +350,7 @@ function generateMessage() {
                 lessons: totalLessons,
                 cost: totalCost,
                 package: packageCount,
+                packageKey: packageKey, // Добавляем ключ для групповых уроков
                 bonus: bonusLessons,
                 costPerLesson: costWithBonuses,
                 link: link,
@@ -295,23 +364,48 @@ function generateMessage() {
         return;
     }
 
-    let message = 'Цены на индивидуальные уроки с учителем:\n\n';
+    let message;
+    if (currentLessonType === 'group') {
+        message = 'Цены на групповые уроки по Roblox:\n\n';
+    } else {
+        message = 'Цены на индивидуальные уроки с учителем:\n\n';
+    }
     selectedPackages.forEach(pkg => {
-        const lessonWord = window.Format.getLessonWord(pkg.package);
-        const bonusWord = window.Format.getBonusWord(pkg.bonus);
         const currencyWord = window.Format.getCurrencyWord(pkg.cost, currencyLabel);
-        const months = Math.floor(pkg.lessons / 4); // Рассчитываем количество месяцев (округляем в меньшую сторону)
-        const monthWord = window.Format.getMonthWord(months);
-
-        let recurringInfo = '';
-        if (pkg.isRecurring) {
-            recurringInfo = ' (подписка каждые 30 дней)';
-        }
-
-        if (!noBonusesMode && pkg.bonus > 0) {
-            message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${window.Format.getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}${recurringInfo}\n${months} ${monthWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
+        
+        if (currentLessonType === 'group') {
+            // Для групповых уроков
+            const moduleNames = {
+                'mod1': '1 модуль',
+                'mod2': '2 модуль', 
+                'mod3': '3 модуль',
+                'mod4': '4 модуль',
+                'mod5': '5 модуль',
+                'mod6': '6 модуль',
+                'mod7': '7 модуль'
+            };
+            const moduleName = moduleNames[pkg.packageKey] || `${pkg.package} уроков`;
+            const weeks = Math.ceil(pkg.lessons / 1); // Групповые уроки обычно 1 раз в неделю
+            const weekWord = weeks === 1 ? 'неделя' : (weeks >= 2 && weeks <= 4) ? 'недели' : 'недель';
+            
+            message += `🎮 ${moduleName} (${pkg.lessons} ${window.Format.getLessonWord(pkg.lessons)}) - ${formatCurrency(pkg.cost)} ${currencyWord}\n${weeks} ${weekWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
         } else {
-            message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}${recurringInfo}\n${months} ${monthWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
+            // Для индивидуальных уроков
+            const lessonWord = window.Format.getLessonWord(pkg.package);
+            const bonusWord = window.Format.getBonusWord(pkg.bonus);
+            const months = Math.floor(pkg.lessons / 4); // Рассчитываем количество месяцев (округляем в меньшую сторону)
+            const monthWord = window.Format.getMonthWord(months);
+
+            let recurringInfo = '';
+            if (pkg.isRecurring) {
+                recurringInfo = ' (подписка каждые 30 дней)';
+            }
+
+            if (!noBonusesMode && pkg.bonus > 0) {
+                message += `📚 ${pkg.package} ${lessonWord} + ${pkg.bonus} ${bonusWord} ${window.Format.getLessonWord(pkg.bonus)} - ${formatCurrency(pkg.cost)} ${currencyWord}${recurringInfo}\n${months} ${monthWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
+            } else {
+                message += `📚 ${pkg.package} ${lessonWord} - ${formatCurrency(pkg.cost)} ${currencyWord}${recurringInfo}\n${months} ${monthWord} обучения, при 1 уроке в неделю.\n${pkg.link}\n\n`;
+            }
         }
     });
 
