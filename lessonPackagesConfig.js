@@ -36,9 +36,9 @@ const lessonPackagesConfig = {
                 56: { cost: 81200, link: "https://app.progkids.com/i/buy/fiftysix-lessons-new", bonusLessons: 4, selected: true }
             },
             discount: {
-                16: { cost: 24000, link: "https://app.progkids.com/i/buy/sixteen-lessons-new-year2025", bonusLessons: 0, selected: false },
-                32: { cost: 44800, link: "https://app.progkids.com/i/buy/thirtytwo-new-year2025", bonusLessons: 0, selected: false },
-                56: { cost: 75600, link: "https://app.progkids.com/i/buy/fiftysix-new-year2025", bonusLessons: 0, selected: false }
+                16: { cost: 24000, link: "https://app.progkids.com/i/buy/sixteen-lessons-new-year", bonusLessons: 0, selected: false },
+                32: { cost: 44800, link: "https://app.progkids.com/i/buy/thirtytwo-new-year", bonusLessons: 0, selected: false },
+                56: { cost: 75600, link: "https://app.progkids.com/i/buy/fiftysix-new-year", bonusLessons: 0, selected: false }
             },
             recurring: {
                 4: { cost: 5700, link: "https://app.progkids.com/i/buy/5700-4", bonusLessons: 0, selected: true, isRecurring: true, description: "Рекуррентный платеж каждые 30 дней" },
@@ -79,9 +79,9 @@ const lessonPackagesConfig = {
                 56: { cost: 1232, link: "https://app.progkids.com/i/buy/122-56", bonusLessons: 4, selected: true }
             },
             discount: {
-                16: { cost: 446, link: "https://app.progkids.com/i/buy/sixteen-lessons-new-year-usd", bonusLessons: 0, selected: false },
-                32: { cost: 730, link: "https://app.progkids.com/i/buy/thirtytwo-new-year-usd", bonusLessons: 0, selected: false },
-                56: { cost: 1176, link: "https://app.progkids.com/i/buy/fiftysix-new-year-usd", bonusLessons: 0, selected: false }
+                16: { cost: 446, link: "https://app.progkids.com/i/buy/sixteen-lessons-new-year2025", bonusLessons: 0, selected: false },
+                32: { cost: 730, link: "https://app.progkids.com/i/buy/thirtytwo-new-year2025", bonusLessons: 0, selected: false },
+                56: { cost: 1176, link: "https://app.progkids.com/i/buy/fiftysix-new-year2025", bonusLessons: 0, selected: false }
             },
             group: {
                 "mod1": { cost: 184, link: "https://app.progkids.com/i/buy/g-mod1-u-usd", bonusLessons: 0, selected: false, lessons: 8, order: 1 },
