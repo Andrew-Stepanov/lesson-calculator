@@ -39,7 +39,6 @@ const lessonPackagesConfig = {
                 32: { cost: 46400, link: "https://app.progkids.com/i/buy/thirtytwo-new-year", bonusLessons: 0, selected: false },
             },
             recurring: {
-                4: { cost: 5700, link: "https://app.progkids.com/i/buy/5700-4", bonusLessons: 0, selected: true, isRecurring: true, description: "Рекуррентный платеж каждые 30 дней" },
                 "4-auto": { cost: 6000, link: "https://app.progkids.com/i/buy/auto-4-ru", bonusLessons: 0, selected: true, isRecurring: true, description: "Рекуррентный платеж каждые 30 дней" }
             },
             group: {

@@ -107,6 +107,12 @@ function attachTableHandlers() {
     tbody.addEventListener('input', (e) => {
         const target = e.target;
         if (target.classList.contains('bonusLessonsInput')) {
+            const maxVal = parseInt(target.max, 10);
+            const curVal = parseInt(target.value, 10);
+            if (Number.isFinite(maxVal) && Number.isFinite(curVal) && curVal > maxVal) {
+                target.value = String(maxVal);
+                showToast(`Максимум бонусных уроков: ${maxVal}`, 'warning');
+            }
             updateCosts();
             generateMessage();
         }
@@ -275,9 +281,35 @@ function updateCosts() {
         } else {
             packageCount = packageKey.includes('-') ? parseInt(packageKey.split('-')[0]) : Number(packageKey);
         }
+        const totalCost = lessonPackages[packageKey] ? Number(lessonPackages[packageKey].cost) : NaN;
+        
+        // Вычисляем максимальное количество бонусных уроков, чтобы стоимость не опустилась ниже минимальной
+        let maxBonusLessons = Infinity;
+        if (Number.isFinite(totalCost) && Number.isFinite(minCost) && minCost > 0) {
+            // totalCost / (packageCount + maxBonus) >= minCost
+            // maxBonus <= totalCost / minCost - packageCount
+            maxBonusLessons = Math.floor(totalCost / minCost) - packageCount;
+            if (maxBonusLessons < 0) maxBonusLessons = 0;
+        }
+        
+        // Устанавливаем максимальное значение для поля ввода
+        if (Number.isFinite(maxBonusLessons)) {
+            bonusEl.max = String(maxBonusLessons);
+            bonusEl.title = `Максимум: ${maxBonusLessons} (чтобы стоимость не стала ниже ${window.Format.formatSpaced(minCost)})`;
+        } else {
+            bonusEl.removeAttribute('max');
+            bonusEl.title = '';
+        }
+        
         let bonusLessons = noBonusesMode ? 0 : Number(bonusEl.value);
         if (!Number.isFinite(bonusLessons) || bonusLessons < 0) bonusLessons = 0;
-        const totalCost = lessonPackages[packageKey] ? Number(lessonPackages[packageKey].cost) : NaN;
+        
+        // Ограничиваем значение бонусных уроков максимумом
+        if (Number.isFinite(maxBonusLessons) && bonusLessons > maxBonusLessons) {
+            bonusLessons = maxBonusLessons;
+            bonusEl.value = String(bonusLessons);
+        }
+        
         const totalLessons = packageCount + bonusLessons;
         const costCell = row.querySelector('.costWithBonuses');
         if (!Number.isFinite(totalCost) || !Number.isFinite(totalLessons) || totalLessons <= 0) {

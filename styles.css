@@ -285,6 +285,7 @@ body {
 
 .toast.success { border-left: 3px solid var(--accent); }
 .toast.error { border-left: 3px solid var(--danger); }
+.toast.warning { border-left: 3px solid #f59e0b; }
 
 /* Адаптив */
 @media (max-width: 900px) {
