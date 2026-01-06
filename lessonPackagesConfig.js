@@ -4,21 +4,21 @@ const currencyMeta = {
         symbol: '₽',
         currencyCode: 'RUB',
         locale: 'ru-RU',
-        minCosts: { ru: 1450, en: 1900 }
+        minCosts: { ru: 1500, en: 1900 }
     },
     usd: {
         label: 'долларов',
         symbol: '$',
         currencyCode: 'USD',
         locale: 'en-US',
-        minCosts: { ru: 22, en: 25 }
+        minCosts: { ru: 23, en: 25 }
     },
     eur: {
         label: 'евро',
         symbol: '€',
         currencyCode: 'EUR',
         locale: 'de-DE',
-        minCosts: { ru: 21, en: 22 }
+        minCosts: { ru: 23, en: 25 }
     }
 };
 
@@ -26,20 +26,19 @@ const lessonPackagesConfig = {
     rub: {
         ru: {
             base: {
-                4: { cost: 7600, link: "https://app.progkids.com/i/buy/four-lessons-new", bonusLessons: 0, selected: false },
-                8: { cost: 14400, link: "https://app.progkids.com/i/buy/eight-lessons-new", bonusLessons: 0, selected: false },
-                16: { cost: 27200, link: "https://app.progkids.com/i/buy/sixteen-lessons-new", bonusLessons: 0, selected: true },
-                24: { cost: 39600, link: "https://app.progkids.com/i/buy/twentyfour-lessons-new", bonusLessons: 0, selected: false },
-                32: { cost: 51200, link: "https://app.progkids.com/i/buy/thirtytwo-lessons-new", bonusLessons: 0, selected: true },
-                40: { cost: 62000, link: "https://app.progkids.com/i/buy/forty-lessons-new", bonusLessons: 0, selected: false },
-                48: { cost: 72000, link: "https://app.progkids.com/i/buy/fortyeight-lessons-new", bonusLessons: 0, selected: false }
+                4: { cost: 8000, link: "https://app.progkids.com/i/buy/four-lessons-new", bonusLessons: 0, selected: false },
+                8: { cost: 15600, link: "https://app.progkids.com/i/buy/eight-lessons-new", bonusLessons: 0, selected: false },
+                16: { cost: 30400, link: "https://app.progkids.com/i/buy/sixteen-lessons-new", bonusLessons: 0, selected: true },
+                24: { cost: 44400, link: "https://app.progkids.com/i/buy/twentyfour-lessons-new", bonusLessons: 0, selected: false },
+                32: { cost: 57600, link: "https://app.progkids.com/i/buy/thirtytwo-lessons-new", bonusLessons: 0, selected: true },
+                40: { cost: 70000, link: "https://app.progkids.com/i/buy/forty-lessons-new", bonusLessons: 0, selected: false },
+                48: { cost: 81600, link: "https://app.progkids.com/i/buy/fortyeight-lessons-new", bonusLessons: 0, selected: false }
             },
             discount: {
-                16: { cost: 24000, link: "https://app.progkids.com/i/buy/sixteen-lessons-new-year", bonusLessons: 0, selected: false },
-                32: { cost: 46400, link: "https://app.progkids.com/i/buy/thirtytwo-new-year", bonusLessons: 0, selected: false },
+                
             },
             recurring: {
-                "4-auto": { cost: 6000, link: "https://app.progkids.com/i/buy/auto-4-ru", bonusLessons: 0, selected: true, isRecurring: true, description: "Рекуррентный платеж каждые 30 дней" }
+                "4-auto": { cost: 6400, link: "https://app.progkids.com/i/buy/auto-4-ru", bonusLessons: 0, selected: true, isRecurring: true, description: "Рекуррентный платеж каждые 30 дней" }
             },
             group: {
                 "mod1": { cost: 12000, link: "https://app.progkids.com/i/buy/g-mod1-r", bonusLessons: 0, selected: false, lessons: 8, order: 1 },
@@ -56,10 +55,10 @@ const lessonPackagesConfig = {
         },
         en: {
             base: {
-                8: { cost: 20000, link: "https://app.progkids.com/i/buy/enrub8", bonusLessons: 0, selected: true },
-                16: { cost: 38400, link: "https://app.progkids.com/i/buy/enrub16", bonusLessons: 0, selected: true },
-                24: { cost: 55200, link: "https://app.progkids.com/i/buy/enrub24", bonusLessons: 0, selected: true },
-                48: { cost: 105600, link: "https://app.progkids.com/i/buy/enrub48", bonusLessons: 0, selected: true },
+                8: { cost: 28000, link: "https://app.progkids.com/i/buy/enrub8", bonusLessons: 0, selected: true },
+                16: { cost: 51200, link: "https://app.progkids.com/i/buy/enrub16", bonusLessons: 0, selected: true },
+                24: { cost: 72000, link: "https://app.progkids.com/i/buy/enrub24", bonusLessons: 0, selected: true },
+                48: { cost: 134400, link: "https://app.progkids.com/i/buy/enrub48", bonusLessons: 0, selected: true },
             }
         }
     },
@@ -71,14 +70,12 @@ const lessonPackagesConfig = {
                 16: { cost: 496, link: "https://app.progkids.com/i/buy/122-16", bonusLessons: 0, selected: true },
                 24: { cost: 696, link: "https://app.progkids.com/i/buy/122-24", bonusLessons: 0, selected: false },
                 32: { cost: 800, link: "https://app.progkids.com/i/buy/122-32", bonusLessons: 0, selected: true },
-                40: { cost: 960, link: "https://app.progkids.com/i/buy/122-40", bonusLessons: 0, selected: false },
-                48: { cost: 1104, link: "https://app.progkids.com/i/buy/122-48", bonusLessons: 0, selected: false },
-                56: { cost: 1232, link: "https://app.progkids.com/i/buy/122-56", bonusLessons: 0, selected: true }
+                40: { cost: 1000, link: "https://app.progkids.com/i/buy/122-40", bonusLessons: 0, selected: false },
+                48: { cost: 1200, link: "https://app.progkids.com/i/buy/122-48", bonusLessons: 0, selected: false },
+                56: { cost: 1400, link: "https://app.progkids.com/i/buy/122-56", bonusLessons: 0, selected: true }
             },
             discount: {
-                16: { cost: 446, link: "https://app.progkids.com/i/buy/sixteen-lessons-new-year2025", bonusLessons: 0, selected: false },
-                32: { cost: 730, link: "https://app.progkids.com/i/buy/thirtytwo-new-year2025", bonusLessons: 0, selected: false },
-                56: { cost: 1176, link: "https://app.progkids.com/i/buy/fiftysix-new-year2025", bonusLessons: 0, selected: false }
+
             },
             group: {
                 "mod1": { cost: 184, link: "https://app.progkids.com/i/buy/g-mod1-u-usd", bonusLessons: 0, selected: false, lessons: 8, order: 1 },
